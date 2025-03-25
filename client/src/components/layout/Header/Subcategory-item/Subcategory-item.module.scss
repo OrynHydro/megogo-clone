@@ -1,0 +1,25 @@
+.subitem {
+	padding: 8px;
+	color: var(--base-black);
+	width: 250px;
+
+	&.menu {
+		width: auto;
+		padding: 8px 16px;
+		&:hover {
+			background-color: var(--base-gray);
+		}
+	}
+
+	& p {
+		transition: var(--transition);
+		cursor: pointer;
+		font-weight: 400;
+		display: inline-block;
+		width: auto;
+	}
+
+	& p:hover {
+		color: #ff4d5a;
+	}
+}

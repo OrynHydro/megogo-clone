@@ -1,0 +1,51 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: var(--var-inter);
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+input,
+button,
+textarea {
+	border: 0;
+	background: transparent;
+	outline: none;
+}
+
+body {
+	font-family: var(--var-inter);
+	overflow-x: hidden;
+	background-color: var(--background-gray);
+}
+
+ul,
+ol,
+li {
+	list-style: none;
+}
+
+.page-wrapper {
+	width: 1600px;
+	margin: 0 auto;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+	margin-top: 50px;
+}
+
+.content-wrapper {
+	width: 1260px;
+	margin: 0 auto;
+}
+
+:root {
+	--base-black: #333;
+	--base-gray: #eaeaea;
+	--background-gray: #f2f2f2;
+	--transition: 0.2s ease-in-out;
+}
