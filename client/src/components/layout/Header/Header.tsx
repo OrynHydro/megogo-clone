@@ -8,12 +8,17 @@ import NavItem from './Nav-item/Nav-item'
 import { IoSearchSharp } from 'react-icons/io5'
 import { langMenu } from '@/utils/lang-menu'
 import { useClickAway } from '@/hooks/useClickAway'
+import RegisterForm from './Register-form/Register-form'
+import { IModalProps } from '@/interfaces/modal-props.interface'
 
-const Header: FC = () => {
+const Header: FC<IModalProps> = ({
+	props: { isModalOpen, setIsModalOpen },
+}) => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 	const [isOpen, setIsOpen] = useState<boolean>(false)
 	const ref = useClickAway(() => setIsOpen(false))
 	const openClass = isOpen ? s.open : ''
+
 	return (
 		<div className={s.header}>
 			<div className='content-wrapper'>
@@ -51,7 +56,7 @@ const Header: FC = () => {
 						<div>
 							<NavItem isMenu item={langMenu} />
 						</div>
-						<div>УВІЙТИ</div>
+						<div onClick={() => setIsModalOpen(true)}>УВІЙТИ</div>
 					</nav>
 				</div>
 			</div>

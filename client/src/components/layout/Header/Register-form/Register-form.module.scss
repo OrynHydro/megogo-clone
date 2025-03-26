@@ -1,0 +1,195 @@
+.modal {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow-y: hidden;
+	opacity: 0;
+	visibility: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: opacity 0.4s linear, visibility 0.4s linear;
+
+	&.open {
+		opacity: 1;
+		visibility: visible;
+
+		.block {
+			transform: translateY(0);
+		}
+	}
+
+	.overlay {
+		background-color: rgba(0, 0, 0, 0.5);
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.block {
+		z-index: 1;
+		background-color: #fff;
+		border-radius: 8px;
+		transform: translateY(-50px);
+		transition: transform 0.4s cubic-bezier(0.5, 0, 1, 1);
+
+		.container {
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			gap: 20px;
+			padding: 40px;
+
+			.top {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+
+				h1 {
+					font-size: 28px;
+					font-weight: 500;
+					line-height: 30px;
+					color: var(--base-black);
+				}
+
+				.cross {
+					color: #c9c9c9;
+					cursor: pointer;
+					font-size: 32px;
+					transition: var(--transition);
+
+					&:hover {
+						color: var(--hover-red);
+					}
+				}
+			}
+
+			p {
+				max-width: 320px;
+				font-size: 16px;
+				font-weight: 400;
+				line-height: 1.25;
+				cursor: default;
+			}
+
+			.inputBlock {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				gap: 15px;
+				font-size: 18px;
+				font-weight: 500;
+				line-height: 20px;
+
+				input {
+					width: 100%;
+					padding: 14px 15px;
+					border: 1px solid #dedede;
+					border-radius: 8px;
+					color: var(--base-black);
+
+					&::placeholder {
+						color: #bdbdbd;
+					}
+
+					&:focus::placeholder {
+						color: #cecece;
+					}
+				}
+
+				button {
+					width: 100%;
+					padding: 15px 32px 17px;
+					cursor: pointer;
+					background-color: #ff6600;
+					transition: var(--transition);
+					color: #fff;
+					border-radius: 8px;
+					margin: 20px 0;
+
+					&:hover {
+						background-color: #ff3300;
+					}
+				}
+
+				.checkboxBlock {
+					display: flex;
+					align-items: center;
+					gap: 10px;
+
+					p {
+						cursor: pointer;
+						user-select: none;
+					}
+
+					.checkbox {
+						.tgl {
+							display: none;
+
+							+ .tglBtn {
+								outline: 0;
+								display: block;
+								width: 34px;
+								height: 20px;
+								position: relative;
+								cursor: pointer;
+								user-select: none;
+
+								&:after,
+								&:before {
+									position: relative;
+									display: block;
+									content: '';
+									width: 50%;
+									height: 100%;
+								}
+
+								&:after {
+									left: 0;
+								}
+
+								&:before {
+									display: none;
+								}
+							}
+
+							&:checked {
+								+ .tglBtn {
+									&:after {
+										left: 50%;
+									}
+								}
+							}
+						}
+
+						.tglLight {
+							+ .tglBtn {
+								background: #989898;
+								border-radius: 2em;
+								padding: 2px;
+								transition: all 0.4s ease;
+
+								&:after {
+									border-radius: 50%;
+									background: #fff;
+									transition: all 0.2s ease;
+								}
+							}
+
+							&:checked {
+								+ .tglBtn {
+									background: #fb640b;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

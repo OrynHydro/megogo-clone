@@ -42,7 +42,7 @@
 				transition: var(--transition);
 
 				&:not(:nth-child(3)):hover {
-					color: #ff2e03;
+					color: var(--hover-red);
 				}
 
 				&:first-child {
@@ -52,7 +52,7 @@
 					font-weight: 500;
 
 					&:hover {
-						border-color: #ff2e03;
+						border-color: var(--hover-red);
 					}
 				}
 

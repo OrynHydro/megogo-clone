@@ -43,16 +43,16 @@
 	&:not(.menu):hover .content,
 	&.opened .content {
 		background-color: #fff;
-		color: #ff2e03;
+		color: var(--hover-red);
 	}
 
 	&:not(.menu):hover .content .icon {
-		color: #ff2e03;
+		color: var(--hover-red);
 	}
 
 	&:not(.opened).menu {
 		.content:hover {
-			color: #ff2e03;
+			color: var(--hover-red);
 		}
 	}
 }
