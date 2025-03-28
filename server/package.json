@@ -8,9 +8,11 @@
 		"tsc": "tsc"
 	},
 	"dependencies": {
+		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
 		"nodemon": "^3.1.9",
-		"path": "^0.12.7"
+		"path": "^0.12.7",
+		"twilio": "^5.5.1"
 	},
 	"devDependencies": {
 		"@types/express": "^5.0.1",
