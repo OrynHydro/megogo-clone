@@ -44,6 +44,25 @@
 			gap: 20px;
 			padding: 40px;
 
+			.loader {
+				margin: 120px 90px;
+				width: fit-content;
+				font-weight: bold;
+				font-family: sans-serif;
+				font-size: 30px;
+				padding-bottom: 8px;
+				background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;
+				animation: l2 2s linear infinite;
+			}
+			.loader:before {
+				content: 'Loading...';
+			}
+			@keyframes l2 {
+				to {
+					background-size: 100% 3px;
+				}
+			}
+
 			.top {
 				width: 100%;
 				display: flex;
@@ -67,6 +86,18 @@
 						color: var(--hover-red);
 					}
 				}
+
+				.return {
+					display: flex;
+					align-items: center;
+					gap: 3px;
+					font-size: 12px;
+					font-weight: 600;
+					line-height: 15px;
+					color: #f60;
+					text-transform: uppercase;
+					cursor: pointer;
+				}
 			}
 
 			p {
@@ -75,6 +106,67 @@
 				font-weight: 400;
 				line-height: 1.25;
 				cursor: default;
+			}
+
+			.step {
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
+
+				h3 {
+					font-size: 28px;
+					font-weight: 500;
+					line-height: 30px;
+					color: var(--base-black);
+				}
+			}
+
+			.buttonBlock {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+
+				button {
+					margin: 0;
+
+					&:last-child {
+						border-color: #ff6600;
+						background-color: transparent;
+						color: #ff6600;
+
+						&:hover {
+							color: #ff3300;
+							border-color: #ff3300;
+						}
+
+						&:disabled {
+							transition: none;
+							background-color: #fff;
+							color: #bdbdbd;
+							cursor: not-allowed;
+							border: 1px solid #bdbdbd;
+							font-weight: 700;
+						}
+					}
+				}
+			}
+
+			button {
+				width: 100%;
+				font-size: 18px;
+				font-weight: 600;
+				padding: 15px 32px 17px;
+				cursor: pointer;
+				background-color: #ff6600;
+				transition: var(--transition);
+				color: #fff;
+				border-radius: 8px;
+				margin: 20px 0;
+				border: 1px solid transparent;
+
+				&:hover {
+					background-color: #ff3300;
+				}
 			}
 
 			.inputBlock {
@@ -86,34 +178,46 @@
 				font-weight: 500;
 				line-height: 20px;
 
-				input {
-					width: 100%;
-					padding: 14px 15px;
-					border: 1px solid #dedede;
-					border-radius: 8px;
-					color: var(--base-black);
+				.field {
+					display: flex;
+					flex-direction: column;
+					gap: 5px;
 
-					&::placeholder {
-						color: #bdbdbd;
+					.phone,
+					.code {
+						width: 100%;
+						padding: 14px 15px;
+						border: 1px solid #dedede;
+						border-radius: 8px;
+						color: var(--base-black);
+						font-weight: 700;
+
+						&::placeholder {
+							color: #bdbdbd;
+						}
+
+						&:focus::placeholder {
+							color: #cecece;
+						}
 					}
 
-					&:focus::placeholder {
-						color: #cecece;
+					.code {
+						text-align: center;
+						letter-spacing: 12px;
+						&::placeholder {
+							font-size: 36px;
+							text-align: center;
+							position: relative;
+							top: 5px;
+							left: 5px;
+						}
 					}
-				}
 
-				button {
-					width: 100%;
-					padding: 15px 32px 17px;
-					cursor: pointer;
-					background-color: #ff6600;
-					transition: var(--transition);
-					color: #fff;
-					border-radius: 8px;
-					margin: 20px 0;
-
-					&:hover {
-						background-color: #ff3300;
+					.error {
+						color: #f11;
+						font-size: 12px;
+						font-weight: 500;
+						line-height: 12px;
 					}
 				}
 

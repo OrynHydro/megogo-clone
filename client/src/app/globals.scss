@@ -43,6 +43,16 @@ li {
 	margin: 0 auto;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
 :root {
 	--base-black: #333;
 	--base-gray: #eaeaea;

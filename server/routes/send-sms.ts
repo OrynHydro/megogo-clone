@@ -13,14 +13,16 @@ router.post('/', async (req: Request, res: Response) => {
 
 		const number = req.body.number
 
+		const code = GenerateCode(6)
+
 		await client.messages.create({
-			body: `Ваш код для реєстрації: ${GenerateCode(6)}`,
+			body: `Ваш код для реєстрації: ${code}`,
 			from: phoneNumber,
 			to: number,
 		})
 
 		console.log('SMS sent successfully')
-		res.status(200).send('SMS sent successfully')
+		res.status(200).send(code)
 	} catch (error) {
 		console.error('Error sending SMS:', error)
 		res.status(500).send('Error sending SMS')
