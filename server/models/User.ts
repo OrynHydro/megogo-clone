@@ -1,23 +1,24 @@
 import mongoose, { Document, Schema } from 'mongoose'
 
 export interface IUser extends Document {
-	MegogoID: number
 	phone: string
+	megogoID: number
 }
 
 const UserSchema: Schema = new mongoose.Schema(
 	{
-		MegogoID: {
-			type: Number,
-			unique: true,
-		},
 		phone: {
 			type: String,
 			required: true,
 			unique: true,
 		},
+		megogoID: {
+			type: Number,
+			unique: true,
+			required: true,
+		},
 	},
-	{ timestamps: true }
+	{ timestamps: true, autoIndex: true }
 )
 
 const UserModel = mongoose.model<IUser>('User', UserSchema)

@@ -22,7 +22,6 @@ interface RegisterFormProps {
 
 interface FormState {
 	step: number
-	verificationCode: number
 	loading: boolean
 	timer: number
 }
@@ -42,8 +41,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
 	const isFirstFocus = useRef<boolean>(true)
 
 	const [formState, setFormState] = useState({
-		step: 2,
-		verificationCode: 0,
+		step: 1,
 		loading: false,
 		timer: 0,
 	})
@@ -53,13 +51,37 @@ const RegisterForm: FC<RegisterFormProps> = ({
 			phone: '',
 			rememberMe: false,
 			code: 1,
+			verificationCode: 1,
 		},
 		validators: {
-			onChange: registerSchema,
+			onSubmit: registerSchema,
 		},
 		onSubmit: async ({ value }) => {
 			if (formState.step === 1) {
 				sendCode()
+			} else if (formState.step === 2) {
+				if (value.code !== value.verificationCode) {
+					return
+				} else {
+					setFormState((prev: FormState) => ({
+						...prev,
+						loading: true,
+					}))
+					try {
+						const res = await axios.post('/api/auth/register', {
+							phone: value.phone,
+							rememberMe: value.rememberMe,
+						})
+						console.log(res.data)
+					} catch (error) {
+						console.error('Error:', error)
+					} finally {
+						setFormState((prev: FormState) => ({
+							...prev,
+							loading: false,
+						}))
+					}
+				}
 			}
 		},
 	})
@@ -75,10 +97,10 @@ const RegisterForm: FC<RegisterFormProps> = ({
 			})
 			setFormState((prev: FormState) => ({
 				...prev,
-				verificationCode: res.data,
-				step: 1,
+				step: 2,
 				timer: 60,
 			}))
+			form.setFieldValue('verificationCode', res.data)
 			form.state.values.code = 0
 		} catch (error) {
 			console.error('Error:', error)
@@ -190,6 +212,11 @@ const RegisterForm: FC<RegisterFormProps> = ({
 															className={`${s.tgl} ${s.tglLight}`}
 															id='checkbox'
 															type='checkbox'
+															onChange={(
+																e: React.ChangeEvent<HTMLInputElement>
+															) => {
+																field.setValue(e.target.checked)
+															}}
 														/>
 														<label className={s.tglBtn} htmlFor='checkbox' />
 													</div>
