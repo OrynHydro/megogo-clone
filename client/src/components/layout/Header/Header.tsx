@@ -9,15 +9,14 @@ import { IoSearchSharp } from 'react-icons/io5'
 import { langMenu } from '@/utils/lang-menu'
 import { useClickAway } from '@/hooks/useClickAway'
 import RegisterForm from './Register-form/Register-form'
-import { IModalProps } from '@/interfaces/modal-props.interface'
+import { useActions } from '@/hooks/useActions'
 
-const Header: FC<IModalProps> = ({
-	props: { isModalOpen, setIsModalOpen },
-}) => {
+const Header: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 	const [isOpen, setIsOpen] = useState<boolean>(false)
 	const ref = useClickAway(() => setIsOpen(false))
 	const openClass = isOpen ? s.open : ''
+	const { changeModalState } = useActions()
 
 	return (
 		<div className={s.header}>
@@ -56,7 +55,7 @@ const Header: FC<IModalProps> = ({
 						<div>
 							<NavItem isMenu item={langMenu} />
 						</div>
-						<div onClick={() => setIsModalOpen(true)}>УВІЙТИ</div>
+						<div onClick={() => changeModalState()}>УВІЙТИ</div>
 					</nav>
 				</div>
 			</div>

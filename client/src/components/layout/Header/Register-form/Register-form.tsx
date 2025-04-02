@@ -1,3 +1,4 @@
+'use client'
 import React, {
 	Dispatch,
 	FC,
@@ -12,25 +13,20 @@ import { FieldApi, FieldInfo, useForm } from '@tanstack/react-form'
 import { registerSchema } from '@/libs/schema/register.schema'
 import { FaChevronLeft } from 'react-icons/fa6'
 import axios from 'axios'
-
-interface RegisterFormProps {
-	props: {
-		isModalOpen: boolean
-		setIsModalOpen: Dispatch<SetStateAction<boolean>>
-	}
-}
-
+import { useActions } from '@/hooks/useActions'
+import { useTypedSelector } from '@/hooks/useTypedSelector'
 interface FormState {
 	step: number
 	loading: boolean
 	timer: number
 }
 
-const RegisterForm: FC<RegisterFormProps> = ({
-	props: { isModalOpen, setIsModalOpen },
-}) => {
+const RegisterForm: FC = () => {
+	const { changeModalState } = useActions()
+	const isOpen = useTypedSelector(state => state.headerModal.isOpen)
+
 	const closeModal = () => {
-		setIsModalOpen(false)
+		changeModalState()
 		setFormState((prev: FormState) => ({
 			...prev,
 			step: 1,
@@ -141,7 +137,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
 	}
 
 	return (
-		<div className={`${s.modal} ${isModalOpen ? s.open : ''}`}>
+		<div className={`${s.modal} ${isOpen ? s.open : ''}`}>
 			<div className={s.block}>
 				<form
 					className={s.container}

@@ -1,11 +1,9 @@
 import mongoose, { Document, Schema } from 'mongoose'
+import { IUserBase } from '../../shared/interfaces/user.interface'
 
-export interface IUser extends Document {
-	phone: string
-	megogoID: number
-}
+export interface IUser extends Document, IUserBase {}
 
-const UserSchema: Schema = new mongoose.Schema(
+const UserSchema: Schema = new mongoose.Schema<IUser>(
 	{
 		phone: {
 			type: String,
@@ -21,5 +19,4 @@ const UserSchema: Schema = new mongoose.Schema(
 	{ timestamps: true, autoIndex: true }
 )
 
-const UserModel = mongoose.model<IUser>('User', UserSchema)
-export default UserModel
+export const UserModel = mongoose.model<IUser>('User', UserSchema)
