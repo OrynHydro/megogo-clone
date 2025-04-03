@@ -9,41 +9,38 @@ const router = Router()
 const secretKeyAccess = process.env.JWT_SECRET_ACCESS!
 const secretKeyRefresh = process.env.JWT_SECRET_REFRESH!
 
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
 	try {
-		const phone = req.body.phone
-		const rememberMe = req.body.rememberMe
+		const { phone, rememberMe } = req.body
 
-		const lastUser = await User.findOne().sort('-megogoID')
-		const newMegogoID = lastUser ? lastUser.megogoID + 1 : 1
+		let user = await User.findOne({ phone })
 
-		const newUser = new User({
-			phone: phone,
-			megogoID: newMegogoID,
-		})
-		const user = await newUser.save()
+		if (!user) {
+			const lastUser = await User.findOne().sort('-megogoID')
+			const newMegogoID = lastUser ? lastUser.megogoID + 1 : 1
+
+			user = await User.create({
+				phone,
+				megogoID: newMegogoID,
+			})
+		}
 
 		const accessToken = jwt.sign({ userId: user._id }, secretKeyAccess, {
 			expiresIn: '1h',
 		})
 
-		res.cookie('accessToken', accessToken, {
-			httpOnly: true,
-		})
+		res.cookie('accessToken', accessToken, { httpOnly: true })
 
 		if (rememberMe) {
 			const refreshToken = jwt.sign({ userId: user._id }, secretKeyRefresh, {
 				expiresIn: '14d',
 			})
-
-			res.cookie('refreshToken', refreshToken, {
-				httpOnly: true,
-			})
+			res.cookie('refreshToken', refreshToken, { httpOnly: true })
 		}
 
 		res.status(200).json(user)
 	} catch (error) {
-		console.log(error)
+		console.error('Auth error:', error)
 		res.status(500).json({ message: 'Server error' })
 	}
 })

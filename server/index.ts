@@ -3,6 +3,7 @@ import path from 'node:path'
 import dotenv from 'dotenv'
 import sendSmsRouter from './routes/send-sms'
 import authRouter from './routes/auth'
+import usersRouter from './routes/users'
 import { MongoConnect } from './middleware/mongo-connect'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -19,6 +20,7 @@ dotenv.config({ path: '.env.local' })
 app.use('/images', express.static(path.join(__dirname, 'public/images')))
 app.use('/send-sms', sendSmsRouter)
 app.use('/auth', authRouter)
+app.use('/users', usersRouter)
 
 MongoConnect()
 

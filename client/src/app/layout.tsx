@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.scss'
 import Layout from '@/components/layout/Layout'
+import { store } from '@/store/store'
+import { Provider } from 'react-redux'
 
 export const metadata: Metadata = {
 	title: 'Create Next App',

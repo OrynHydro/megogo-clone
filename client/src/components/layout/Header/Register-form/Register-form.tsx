@@ -22,7 +22,7 @@ interface FormState {
 }
 
 const RegisterForm: FC = () => {
-	const { changeModalState } = useActions()
+	const { changeModalState, setUser } = useActions()
 	const isOpen = useTypedSelector(state => state.headerModal.isOpen)
 
 	const closeModal = () => {
@@ -64,11 +64,14 @@ const RegisterForm: FC = () => {
 						loading: true,
 					}))
 					try {
-						const res = await axios.post('/api/auth/register', {
+						const res = await axios.post('/api/auth', {
 							phone: value.phone,
 							rememberMe: value.rememberMe,
 						})
-						console.log(res.data)
+						setUser({
+							phone: res.data.phone,
+							megogoID: res.data.megogoID,
+						})
 					} catch (error) {
 						console.error('Error:', error)
 					} finally {
@@ -76,6 +79,7 @@ const RegisterForm: FC = () => {
 							...prev,
 							loading: false,
 						}))
+						changeModalState()
 					}
 				}
 			}

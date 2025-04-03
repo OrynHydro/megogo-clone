@@ -35,6 +35,43 @@
 			align-items: center;
 			gap: 20px;
 
+			.user {
+				display: inline-block;
+				cursor: pointer;
+				position: relative;
+
+				&::after {
+					content: '';
+					position: absolute;
+					top: 0px;
+					left: 0px;
+					width: 28px;
+					height: 28px;
+					background: linear-gradient(
+						98deg,
+						#227fc3 6.24%,
+						#22c3b1 79.75%,
+						#22c3b1 98.79%
+					);
+					border-radius: 50%;
+					padding: 2px;
+					-webkit-mask: linear-gradient(#fff 0 0) content-box,
+						linear-gradient(#fff 0 0);
+					-webkit-mask-composite: destination-out;
+					mask-composite: exclude;
+					transition: var(--transition);
+					opacity: 0;
+				}
+
+				&:hover::after {
+					opacity: 1;
+				}
+
+				img {
+					border-radius: 50%;
+				}
+			}
+
 			& > div {
 				display: block;
 				font-size: 14px;

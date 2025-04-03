@@ -8,8 +8,8 @@ import NavItem from './Nav-item/Nav-item'
 import { IoSearchSharp } from 'react-icons/io5'
 import { langMenu } from '@/utils/lang-menu'
 import { useClickAway } from '@/hooks/useClickAway'
-import RegisterForm from './Register-form/Register-form'
 import { useActions } from '@/hooks/useActions'
+import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 const Header: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
@@ -17,6 +17,7 @@ const Header: FC = () => {
 	const ref = useClickAway(() => setIsOpen(false))
 	const openClass = isOpen ? s.open : ''
 	const { changeModalState } = useActions()
+	const user = useTypedSelector(state => state.user.data)
 
 	return (
 		<div className={s.header}>
@@ -55,7 +56,18 @@ const Header: FC = () => {
 						<div>
 							<NavItem isMenu item={langMenu} />
 						</div>
-						<div onClick={() => changeModalState()}>УВІЙТИ</div>
+						{!user ? (
+							<div onClick={() => changeModalState()}>УВІЙТИ</div>
+						) : (
+							<Link href={'/account'} className={s.user}>
+								<Image
+									width={32}
+									height={32}
+									alt='user'
+									src={`${PF}/user-img.webp`}
+								/>
+							</Link>
+						)}
 					</nav>
 				</div>
 			</div>

@@ -5,11 +5,11 @@ import { IUser } from '@/interfaces/user.interface'
 export const userSlice = createSlice({
 	name: 'user',
 	initialState: {
-		user: null as IUser | null,
+		data: null as IUser | null,
 	},
 	reducers: {
 		setUser: (state, action: PayloadAction<IUser | null>) => {
-			state.user = action.payload as Draft<IUser | null>
+			state.data = action.payload as Draft<IUser | null>
 		},
 	},
 })

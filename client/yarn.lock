@@ -231,6 +231,18 @@
   resolved "https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.33.5.tgz#56f00962ff0c4e0eb93d34a047d29fa995e3e342"
   integrity sha512-MpY/o8/8kj+EcnxwvrP4aTJSWw/aZ7JIGR4aBeZkZw5B7/Jn+tY9/VNwtcoGmdT7GfggGIU4kygOMSbYnOrAbg==
 
+"@lottiefiles/dotlottie-react@^0.13.3":
+  version "0.13.3"
+  resolved "https://registry.npmjs.org/@lottiefiles/dotlottie-react/-/dotlottie-react-0.13.3.tgz#d10b743a33f8c024528b018dde627dbd81eedffb"
+  integrity sha512-V4FfdYlqzjBUX7f0KV6vfQOOI0Cp+3XeG/ZqSDFSEVg5P7fpROpDv5/I9aTM8sOCESK1SWT96Fem+QVUnBV1wQ==
+  dependencies:
+    "@lottiefiles/dotlottie-web" "0.42.0"
+
+"@lottiefiles/dotlottie-web@0.42.0":
+  version "0.42.0"
+  resolved "https://registry.npmjs.org/@lottiefiles/dotlottie-web/-/dotlottie-web-0.42.0.tgz#b46f8ff85363192d139ac79796c199914f4d5812"
+  integrity sha512-Zr2LCaOAoPCsdAQgeLyCSiQ1+xrAJtRCyuEYDj0qR5heUwpc+Pxbb88JyTVumcXFfKOBMOMmrlsTScLz2mrvQQ==
+
 "@napi-rs/wasm-runtime@^0.2.7":
   version "0.2.7"
   resolved "https://registry.npmjs.org/@napi-rs/wasm-runtime/-/wasm-runtime-0.2.7.tgz#288f03812a408bc53c2c3686c65f38fe90f295eb"
