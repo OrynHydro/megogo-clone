@@ -8,11 +8,15 @@ import { Provider } from 'react-redux'
 import { store } from '@/store/store'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import s from './AuthProvider.module.scss'
+import { usePathname, useRouter } from 'next/navigation'
+import ProfileChoose from '@/components/screens/Profile-choose.tsx/Profile-choose'
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 	const [loading, setLoading] = useState<boolean>(true)
 	const user = useAuth()
 	const { setUser } = useActions()
+	const router = useRouter()
+	const pathname = usePathname()
 
 	useEffect(() => {
 		const checkAuth = async () => {
@@ -25,9 +29,14 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 					return
 				}
 
+				if (data.profiles.length === 1 && data.profiles[0].type === 'family') {
+					router.push('/profile-choose')
+				}
+
 				setUser({
 					phone: data.phone,
 					megogoID: data.megogoID,
+					profiles: data.profiles,
 				} as IUser)
 			} catch (error) {
 				console.error('Auth check failed:', error)
@@ -40,6 +49,10 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 		checkAuth()
 	}, [user, setUser])
 
+	if (pathname === '/profile-choose' && user) {
+		return <ProfileChoose />
+	}
+
 	if (loading) {
 		return (
 			<div className={s.loading}>
@@ -51,7 +64,6 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 			</div>
 		)
 	}
-
 	return <>{children}</>
 }
 

@@ -1,0 +1,71 @@
+.checkboxBlock {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+
+	p {
+		cursor: pointer;
+		user-select: none;
+	}
+
+	.checkbox {
+		.tgl {
+			display: none;
+
+			+ .tglBtn {
+				outline: 0;
+				display: block;
+				width: 34px;
+				height: 20px;
+				position: relative;
+				cursor: pointer;
+				user-select: none;
+
+				&:after,
+				&:before {
+					position: relative;
+					display: block;
+					content: '';
+					width: 50%;
+					height: 100%;
+				}
+
+				&:after {
+					left: 0;
+				}
+
+				&:before {
+					display: none;
+				}
+			}
+
+			&:checked {
+				+ .tglBtn {
+					&:after {
+						left: 50%;
+					}
+				}
+			}
+		}
+
+		.tglLight {
+			+ .tglBtn {
+				background: #989898;
+				border-radius: 2em;
+				padding: 2px;
+
+				&:after {
+					border-radius: 50%;
+					background: #fff;
+					transition: all 0.2s ease;
+				}
+			}
+
+			&:checked {
+				+ .tglBtn {
+					background: var(--checkbox-color);
+				}
+			}
+		}
+	}
+}

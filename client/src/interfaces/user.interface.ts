@@ -1,3 +1,5 @@
-import { IUserBase } from '../../../shared/interfaces/user.interface'
+import { IProfile, IUserBase } from '../../../shared/interfaces/user.interface'
 
-export interface IUser extends IUserBase {}
+export interface IUser extends IUserBase {
+	activeProfile?: IProfile
+}

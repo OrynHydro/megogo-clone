@@ -15,6 +15,8 @@ import { FaChevronLeft } from 'react-icons/fa6'
 import axios from 'axios'
 import { useActions } from '@/hooks/useActions'
 import { useTypedSelector } from '@/hooks/useTypedSelector'
+import Checkbox from '@/components/ui/Checkbox/Checkbox'
+import { useRouter } from 'next/navigation'
 interface FormState {
 	step: number
 	loading: boolean
@@ -33,6 +35,8 @@ const RegisterForm: FC = () => {
 			verificationCode: 0,
 		}))
 	}
+
+	const router = useRouter()
 
 	const isFirstFocus = useRef<boolean>(true)
 
@@ -68,10 +72,13 @@ const RegisterForm: FC = () => {
 							phone: value.phone,
 							rememberMe: value.rememberMe,
 						})
+						const { phone, megogoID, profiles } = res.data
 						setUser({
-							phone: res.data.phone,
-							megogoID: res.data.megogoID,
+							phone: phone,
+							megogoID: megogoID,
+							profiles: profiles,
 						})
+						router.push('/profile-choose')
 					} catch (error) {
 						console.error('Error:', error)
 					} finally {
@@ -101,7 +108,10 @@ const RegisterForm: FC = () => {
 				timer: 60,
 			}))
 			form.setFieldValue('verificationCode', res.data)
-			form.state.values.code = 0
+			// form.state.values.code = 0
+
+			// this was done to avoid sending SMS in development mode
+			form.setFieldValue('code', res.data)
 		} catch (error) {
 			console.error('Error:', error)
 		} finally {
@@ -206,22 +216,11 @@ const RegisterForm: FC = () => {
 										</form.Field>
 										<form.Field name='rememberMe'>
 											{field => (
-												<label className={s.checkboxBlock} htmlFor='checkbox'>
-													<div className={s.checkbox}>
-														<input
-															className={`${s.tgl} ${s.tglLight}`}
-															id='checkbox'
-															type='checkbox'
-															onChange={(
-																e: React.ChangeEvent<HTMLInputElement>
-															) => {
-																field.setValue(e.target.checked)
-															}}
-														/>
-														<label className={s.tglBtn} htmlFor='checkbox' />
-													</div>
-													<p>Запам'ятати мене</p>
-												</label>
+												<Checkbox
+													field={field}
+													label="Запам'ятати мене"
+													color='#fb640b'
+												/>
 											)}
 										</form.Field>
 

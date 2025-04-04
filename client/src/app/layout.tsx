@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.scss'
-import Layout from '@/components/layout/Layout'
 import { store } from '@/store/store'
 import { Provider } from 'react-redux'
+import './globals.scss'
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -23,9 +22,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={inter.variable}>
-				<Layout>{children}</Layout>
-			</body>
+			<body className={inter.variable}>{children}</body>
 		</html>
 	)
 }

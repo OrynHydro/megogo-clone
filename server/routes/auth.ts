@@ -22,6 +22,13 @@ router.post('/', async (req: Request, res: Response) => {
 			user = await User.create({
 				phone,
 				megogoID: newMegogoID,
+				profiles: [
+					{
+						name: 'User',
+						type: 'family',
+						avatar: '/user-img.webp',
+					},
+				],
 			})
 		}
 
