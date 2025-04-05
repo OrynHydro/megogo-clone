@@ -64,7 +64,7 @@ const Header: FC = () => {
 									width={32}
 									height={32}
 									alt='user'
-									src={`${PF}/user-img.webp`}
+									src={`${PF}/user-img.jpg`}
 								/>
 							</Link>
 						)}

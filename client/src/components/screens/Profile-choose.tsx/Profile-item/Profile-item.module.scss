@@ -1,0 +1,82 @@
+.profile {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+
+	&:hover {
+		.imgBlock::after {
+			opacity: 1;
+		}
+
+		.name {
+			text-decoration: underline;
+		}
+	}
+
+	.imgBlock {
+		display: inline-block;
+		cursor: pointer;
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 120px;
+			height: 120px;
+			background: var(--blue-gradient);
+			border-radius: 50%;
+			padding: 4px;
+			-webkit-mask: linear-gradient(#fff 0 0) content-box,
+				linear-gradient(#fff 0 0);
+			-webkit-mask-composite: destination-out;
+			mask-composite: exclude;
+			opacity: 0;
+		}
+
+		.img {
+			border-radius: 50%;
+			object-fit: cover;
+			width: 128px;
+			height: 128px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			//background isn't working (fix it)
+			.add {
+				background-color: var(--base-gray);
+			}
+		}
+	}
+
+	.name {
+		font-size: 24px;
+		font-weight: 500;
+		line-height: 26px;
+		color: var(--base-black);
+		position: relative;
+		max-width: 128px;
+		text-align: center;
+	}
+
+	.type {
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 12px;
+		color: #fff;
+		padding: 5px 8px 3px;
+		border-radius: 4px;
+
+		&.family {
+			background: var(--blue-gradient);
+		}
+
+		&.kid {
+			background: linear-gradient(264deg, #c800c0 -14.82%, #00b7df 129.24%);
+		}
+	}
+}

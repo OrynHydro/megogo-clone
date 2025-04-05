@@ -25,6 +25,25 @@
 		}
 	}
 
+	.mid {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 40px;
+
+		h1 {
+			font-size: 56px;
+			font-weight: 600;
+			line-height: 70px;
+			color: var(--base-black);
+		}
+
+		.profiles {
+			display: flex;
+			gap: 82px;
+		}
+	}
+
 	.bot {
 		position: relative;
 		.checkboxBlock {

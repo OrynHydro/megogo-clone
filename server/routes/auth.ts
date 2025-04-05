@@ -26,7 +26,7 @@ router.post('/', async (req: Request, res: Response) => {
 					{
 						name: 'User',
 						type: 'family',
-						avatar: '/user-img.webp',
+						avatar: '/user-img.jpg',
 					},
 				],
 			})

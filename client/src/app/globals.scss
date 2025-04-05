@@ -59,4 +59,10 @@ input[type='number'] {
 	--background-gray: #f2f2f2;
 	--transition: 0.2s ease-in-out;
 	--hover-red: #ff2e03;
+	--blue-gradient: linear-gradient(
+		98deg,
+		#227fc3 6.24%,
+		#22c3b1 79.75%,
+		#22c3b1 98.79%
+	);
 }
