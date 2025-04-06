@@ -16,12 +16,13 @@
 		margin-top: 10px;
 		padding: 0 8px;
 
-		span {
+		.change {
 			font-size: 20px;
 			font-weight: 500;
 			line-height: 25px;
 			color: var(--base-black);
 			text-decoration: underline;
+			cursor: pointer;
 		}
 	}
 

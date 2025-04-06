@@ -9,7 +9,7 @@ import { IoSearchSharp } from 'react-icons/io5'
 import { langMenu } from '@/utils/lang-menu'
 import { useClickAway } from '@/hooks/useClickAway'
 import { useActions } from '@/hooks/useActions'
-import { useTypedSelector } from '@/hooks/useTypedSelector'
+import { useAuth } from '@/hooks/useAuth'
 
 const Header: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
@@ -17,7 +17,7 @@ const Header: FC = () => {
 	const ref = useClickAway(() => setIsOpen(false))
 	const openClass = isOpen ? s.open : ''
 	const { changeModalState } = useActions()
-	const user = useTypedSelector(state => state.user.data)
+	const { user, activeProfile } = useAuth()
 
 	return (
 		<div className={s.header}>
@@ -56,7 +56,7 @@ const Header: FC = () => {
 						<div>
 							<NavItem isMenu item={langMenu} />
 						</div>
-						{!user ? (
+						{!activeProfile ? (
 							<div onClick={() => changeModalState()}>УВІЙТИ</div>
 						) : (
 							<Link href={'/account'} className={s.user}>
@@ -64,7 +64,7 @@ const Header: FC = () => {
 									width={32}
 									height={32}
 									alt='user'
-									src={`${PF}/user-img.jpg`}
+									src={`${PF}${activeProfile.avatar}`}
 								/>
 							</Link>
 						)}

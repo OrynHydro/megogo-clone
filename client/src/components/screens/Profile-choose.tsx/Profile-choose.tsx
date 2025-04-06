@@ -6,19 +6,38 @@ import Checkbox from '@/components/ui/Checkbox/Checkbox'
 import { useForm } from '@tanstack/react-form'
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 import ProfileItem from './Profile-item/Profile-item'
-import { ProfileType } from '../../../../../shared/interfaces/user.interface'
+import { IProfile, ProfileType } from '@/interfaces/profile.interface'
+import { useAuth } from '@/hooks/useAuth'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { IUser } from '@/interfaces/user.interface'
 
 const ProfileChoose: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 
+	const router = useRouter()
+
 	const form = useForm({
 		defaultValues: {
+			profile: null as IProfile | null,
 			rememberMe: false,
 		},
-		onSubmit: async ({ value }) => {},
+		onSubmit: async ({ value }) => {
+			if (!value.profile) return
+
+			const { profile, rememberMe } = value
+			const { data } = await axios.post('/api/profiles/set-profile', {
+				profile: profile,
+				rememberMe: rememberMe,
+			})
+
+			if (data) {
+				router.push('/')
+			}
+		},
 	})
 
-	const user = useTypedSelector(state => state.user.data)
+	const { user } = useAuth()
 
 	return (
 		<div className={s.container}>
@@ -31,12 +50,32 @@ const ProfileChoose: FC = () => {
 
 				{user?.profiles.length === 1 && user?.profiles[0].type === 'family' && (
 					<div className={s.profiles}>
-						<ProfileItem user={user} profile={user.profiles[0]} />
+						<form.Field name='profile'>
+							{field => (
+								<div
+									onClick={() => {
+										field.setValue(user.profiles[0])
+										form.handleSubmit()
+									}}
+								>
+									<ProfileItem user={user} profile={user.profiles[0]} />
+								</div>
+							)}
+						</form.Field>
+
 						<ProfileItem
 							user={user}
 							profile={{
 								name: 'Додати дитячий',
 								type: ProfileType.KID12,
+								avatar: null,
+							}}
+						/>
+						<ProfileItem
+							user={user}
+							profile={{
+								name: 'Додати профіль',
+								type: ProfileType.FAMILY,
 								avatar: null,
 							}}
 						/>

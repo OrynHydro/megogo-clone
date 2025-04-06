@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import sendSmsRouter from './routes/send-sms'
 import authRouter from './routes/auth'
 import usersRouter from './routes/users'
+import profilesRouter from './routes/profile'
 import { MongoConnect } from './middleware/mongo-connect'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -21,6 +22,7 @@ app.use('/images', express.static(path.join(__dirname, 'public/images')))
 app.use('/send-sms', sendSmsRouter)
 app.use('/auth', authRouter)
 app.use('/users', usersRouter)
+app.use('/profiles', profilesRouter)
 
 MongoConnect()
 

@@ -1,16 +1,17 @@
-import { IUser } from '@/interfaces/user.interface'
 import { useTypedSelector } from './useTypedSelector'
+import { IUser } from '@/interfaces/user.interface'
+import { IProfile } from '@/interfaces/profile.interface'
 
-interface AuthResponse {
-	user: IUser | null
+interface UseAuthReturn {
+	user?: IUser | null
+	activeProfile?: IProfile | null
 }
 
-export const useAuth = () => {
-	const authResponse = useTypedSelector(state => state.user) as AuthResponse
+export const useAuth = (): UseAuthReturn => {
+	const { data, activeProfile } = useTypedSelector(state => state.user)
 
-	if (authResponse.user) {
-		return authResponse.user
+	return {
+		user: data,
+		activeProfile,
 	}
-
-	return null
 }

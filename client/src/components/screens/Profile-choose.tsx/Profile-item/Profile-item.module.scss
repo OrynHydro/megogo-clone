@@ -45,11 +45,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-
-			//background isn't working (fix it)
-			.add {
-				background-color: var(--base-gray);
-			}
+			background-color: var(--base-gray);
 		}
 	}
 

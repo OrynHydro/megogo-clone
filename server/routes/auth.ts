@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express'
 import User from '../models/User'
+import Profile from '../models/Profile'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config({ path: '.env.local' })
@@ -22,14 +23,17 @@ router.post('/', async (req: Request, res: Response) => {
 			user = await User.create({
 				phone,
 				megogoID: newMegogoID,
-				profiles: [
-					{
-						name: 'User',
-						type: 'family',
-						avatar: '/user-img.jpg',
-					},
-				],
 			})
+
+			const profile = await Profile.create({
+				name: 'User',
+				type: 'family',
+				avatar: '/user-img.jpg',
+				user: user._id,
+			})
+
+			user.profiles.push(profile)
+			await user.save()
 		}
 
 		const accessToken = jwt.sign({ userId: user._id }, secretKeyAccess, {

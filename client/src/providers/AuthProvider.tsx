@@ -10,11 +10,12 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import s from './AuthProvider.module.scss'
 import { usePathname, useRouter } from 'next/navigation'
 import ProfileChoose from '@/components/screens/Profile-choose.tsx/Profile-choose'
+import { IProfile } from '@/interfaces/profile.interface'
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 	const [loading, setLoading] = useState<boolean>(true)
-	const user = useAuth()
-	const { setUser } = useActions()
+	const { user } = useAuth()
+	const { setUser, setActiveProfile } = useActions()
 	const router = useRouter()
 	const pathname = usePathname()
 
@@ -23,21 +24,41 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 			try {
 				if (user) return
 
-				const { data } = await axios.get('/api/users/get-by-token')
-				if (!data) {
-					setUser(null)
+				const { data } = await axios.get('/api/profiles/get-by-token')
+				if (data) {
+					setActiveProfile({
+						type: data.type,
+						name: data.name,
+						avatar: data.avatar,
+					} as IProfile)
+					setUser({
+						phone: data.user.phone,
+						megogoID: data.user.megogoID,
+						profiles: data.user.profiles,
+					} as IUser)
+					return
+				} else {
+					const { data } = await axios.get('/api/users/get-by-token')
+
+					if (!data) {
+						setUser(null)
+						return
+					}
+
+					if (
+						data.profiles.length === 1 &&
+						data.profiles[0].type === 'family'
+					) {
+						router.push('/profile-choose')
+					}
+
+					setUser({
+						phone: data.phone,
+						megogoID: data.megogoID,
+						profiles: data.profiles,
+					} as IUser)
 					return
 				}
-
-				if (data.profiles.length === 1 && data.profiles[0].type === 'family') {
-					router.push('/profile-choose')
-				}
-
-				setUser({
-					phone: data.phone,
-					megogoID: data.megogoID,
-					profiles: data.profiles,
-				} as IUser)
 			} catch (error) {
 				console.error('Auth check failed:', error)
 				setUser(null)
