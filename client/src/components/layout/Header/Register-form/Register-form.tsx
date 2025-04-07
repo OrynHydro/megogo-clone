@@ -72,10 +72,9 @@ const RegisterForm: FC = () => {
 							phone: value.phone,
 							rememberMe: value.rememberMe,
 						})
-						const { phone, megogoID, profiles } = res.data
+						const { phone, profiles } = res.data
 						setUser({
 							phone: phone,
-							megogoID: megogoID,
 							profiles: profiles,
 						})
 						router.push('/profile-choose')

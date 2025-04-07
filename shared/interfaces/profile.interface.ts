@@ -1,6 +1,7 @@
 import { ProfileType } from '../../client/src/interfaces/profile.interface'
-export interface IProfileBase {
+export interface IProfileGeneral {
 	name: string
 	type: ProfileType
+	megogoID: number
 	avatar: string | null
 }

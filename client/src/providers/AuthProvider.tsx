@@ -8,13 +8,13 @@ import { Provider } from 'react-redux'
 import { store } from '@/store/store'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import s from './AuthProvider.module.scss'
-import { usePathname, useRouter } from 'next/navigation'
+import { redirect, usePathname, useRouter } from 'next/navigation'
 import ProfileChoose from '@/components/screens/Profile-choose.tsx/Profile-choose'
 import { IProfile } from '@/interfaces/profile.interface'
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 	const [loading, setLoading] = useState<boolean>(true)
-	const { user } = useAuth()
+	const { user, activeProfile } = useAuth()
 	const { setUser, setActiveProfile } = useActions()
 	const router = useRouter()
 	const pathname = usePathname()
@@ -24,41 +24,44 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 			try {
 				if (user) return
 
-				const { data } = await axios.get('/api/profiles/get-by-token')
-				if (data) {
+				const profileRes = await axios.get('/api/profiles/get-by-token')
+				const profileData = profileRes.data
+
+				if (profileData) {
 					setActiveProfile({
-						type: data.type,
-						name: data.name,
-						avatar: data.avatar,
+						type: profileData.type,
+						name: profileData.name,
+						megogoID: profileData.megogoID,
+						avatar: profileData.avatar,
 					} as IProfile)
-					setUser({
-						phone: data.user.phone,
-						megogoID: data.user.megogoID,
-						profiles: data.user.profiles,
-					} as IUser)
-					return
-				} else {
-					const { data } = await axios.get('/api/users/get-by-token')
-
-					if (!data) {
-						setUser(null)
-						return
-					}
-
-					if (
-						data.profiles.length === 1 &&
-						data.profiles[0].type === 'family'
-					) {
-						router.push('/profile-choose')
-					}
 
 					setUser({
-						phone: data.phone,
-						megogoID: data.megogoID,
-						profiles: data.profiles,
+						phone: profileData.user.phone,
+						profiles: profileData.user.profiles,
 					} as IUser)
 					return
 				}
+
+				const userRes = await axios.get('/api/users/get-by-token')
+				const userData = userRes.data
+
+				if (!userData) {
+					setUser(null)
+					return
+				}
+
+				if (
+					userData.profiles.length === 1 &&
+					userData.profiles[0].type === 'family'
+				) {
+					router.push('/profile-choose')
+				}
+
+				setUser({
+					phone: userData.phone,
+					megogoID: userData.megogoID,
+					profiles: userData.profiles,
+				} as IUser)
 			} catch (error) {
 				console.error('Auth check failed:', error)
 				setUser(null)
@@ -70,9 +73,11 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 		checkAuth()
 	}, [user, setUser])
 
-	if (pathname === '/profile-choose' && user) {
-		return <ProfileChoose />
-	}
+	useEffect(() => {
+		if (user && !activeProfile && pathname !== '/profile-choose') {
+			redirect('/profile-choose')
+		}
+	}, [user, activeProfile, pathname])
 
 	if (loading) {
 		return (

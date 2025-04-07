@@ -1,8 +1,7 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
+import { IProfileGeneral } from '../../shared/interfaces/profile.interface'
 
-export interface IProfileBase {
-	_id: mongoose.Types.ObjectId
-}
+interface IProfileBase extends IProfileGeneral, Document {}
 
 export const ProfileSchema = new mongoose.Schema({
 	name: { type: String, required: true },
@@ -12,6 +11,11 @@ export const ProfileSchema = new mongoose.Schema({
 		default: 'family',
 	},
 	avatar: { type: String, required: true },
+	megogoID: {
+		type: Number,
+		unique: true,
+		required: true,
+	},
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',

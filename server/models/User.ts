@@ -24,11 +24,6 @@ const UserSchema: Schema = new mongoose.Schema<IUser>(
 			required: true,
 			unique: true,
 		},
-		megogoID: {
-			type: Number,
-			unique: true,
-			required: true,
-		},
 		profiles: [ProfileSchema],
 	},
 	{ timestamps: true, autoIndex: true }

@@ -17,12 +17,33 @@
 		padding: 0 8px;
 
 		.change {
+			display: inline-block;
+			height: 48px;
 			font-size: 20px;
 			font-weight: 500;
 			line-height: 25px;
 			color: var(--base-black);
 			text-decoration: underline;
 			cursor: pointer;
+		}
+
+		.cross {
+			width: 48px;
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			border: 2px solid var(--base-black);
+
+			transition: var(--transition);
+			cursor: pointer;
+			font-size: 24px;
+
+			&:hover {
+				background-color: var(--base-black);
+				color: #fff;
+			}
 		}
 	}
 
@@ -47,11 +68,13 @@
 
 	.bot {
 		position: relative;
+
 		.checkboxBlock {
 			&:hover + .hint {
 				opacity: 1;
 			}
 		}
+
 		.hint {
 			position: absolute;
 			bottom: 30px;
@@ -66,6 +89,13 @@
 			font-size: 16px;
 			font-weight: 500;
 			line-height: 20px;
+			color: var(--base-black);
+		}
+
+		.step {
+			font-size: 22px;
+			font-weight: 600;
+			line-height: 30px;
 			color: var(--base-black);
 		}
 	}

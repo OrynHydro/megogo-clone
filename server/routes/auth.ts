@@ -17,17 +17,17 @@ router.post('/', async (req: Request, res: Response) => {
 		let user = await User.findOne({ phone })
 
 		if (!user) {
-			const lastUser = await User.findOne().sort('-megogoID')
-			const newMegogoID = lastUser ? lastUser.megogoID + 1 : 1
+			const lastProfile = await Profile.findOne().sort('-megogoID')
+			const newMegogoID = lastProfile ? lastProfile.megogoID + 1 : 1
 
 			user = await User.create({
 				phone,
-				megogoID: newMegogoID,
 			})
 
 			const profile = await Profile.create({
 				name: 'User',
 				type: 'family',
+				megogoID: newMegogoID,
 				avatar: '/user-img.jpg',
 				user: user._id,
 			})
