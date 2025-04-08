@@ -3,6 +3,7 @@ import s from './Profile-new-item.module.scss'
 import { ProfileType } from '@/interfaces/profile.interface'
 import { profileTypeLabels } from '@/interfaces/profile.interface'
 import TypeLabel from '../Type-label/Type-label'
+import axios from 'axios'
 
 const ProfileNewItem: FC<{ type: ProfileType }> = ({ type }) => {
 	const hintText: Record<ProfileType, string> = {
@@ -14,6 +15,7 @@ const ProfileNewItem: FC<{ type: ProfileType }> = ({ type }) => {
 			'Якщо ви дитина вже тільки в душі, дивіться все, що є на MEGOGO',
 		[ProfileType.FAMILY]: '',
 	}
+
 	return (
 		<div className={s.item}>
 			<div

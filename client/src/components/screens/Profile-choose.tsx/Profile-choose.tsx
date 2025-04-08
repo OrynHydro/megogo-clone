@@ -44,31 +44,77 @@ const ProfileChoose: FC = () => {
 		},
 	})
 
-	const [pageStage, setPageStage] = useState('choose')
+	const [pageState, setPageState] = useState<{
+		action: 'choose' | 'create'
+		type: 'all' | 'kid' | null
+		step: number
+	}>({
+		action: 'choose',
+		type: null,
+		step: 1,
+	})
 
 	const { user } = useAuth()
 
-	if (pageStage.split('-')[0] === 'create') {
+	const [file, setFile] = useState<File | null>(null)
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		console.log('rredf')
+		const formData = new FormData(e.currentTarget)
+		formData.append('inputName', 'sampleFile')
+		formData.append('file', file as Blob)
+
+		await axios.post('/api/upload', formData).then(res => console.log(res.data))
+	}
+
+	if (pageState.action === 'create') {
 		return (
 			<div className={s.container}>
 				<div className={s.top}>
 					<Image src={`${PF}/logo.svg`} alt='Logo' width={136} height={44} />
-					<div className={s.cross} onClick={() => setPageStage('choose')}>
+					<div
+						className={s.cross}
+						onClick={() =>
+							setPageState({
+								action: 'choose',
+								type: null,
+								step: 1,
+							})
+						}
+					>
 						<RxCross1 />
 					</div>
 				</div>
 				<div className={s.mid}>
 					<h1>Хто дивиметься?</h1>
 					<div className={s.profiles} style={{ gap: '20px' }}>
-						{pageStage.split('-')[1] === 'all' && (
+						{pageState.type === 'all' && (
 							<ProfileNewItem type={ProfileType.ADULT} />
 						)}
 						<ProfileNewItem type={ProfileType.KID6} />
 						<ProfileNewItem type={ProfileType.KID12} />
+						<form
+							id='uploadForm'
+							method='post'
+							encType='multipart/form-data'
+							onSubmit={e => handleSubmit(e)}
+						>
+							<input
+								type='file'
+								name='sampleFile'
+								onChange={e => {
+									if (e.target.files && e.target.files[0]) {
+										setFile(e.target.files[0])
+									}
+								}}
+							/>
+							<input type='submit' value='Upload!' />
+						</form>
 					</div>
 				</div>
 				<div className={s.bot}>
-					<span className={s.step}>Крок {pageStage.split('-')[2]} з 3</span>
+					<span className={s.step}>Крок {pageState.step} з 3</span>
 				</div>
 			</div>
 		)
@@ -98,7 +144,15 @@ const ProfileChoose: FC = () => {
 							)}
 						</form.Field>
 
-						<div onClick={() => setPageStage('create-kid-1')}>
+						<div
+							onClick={() =>
+								setPageState({
+									action: 'create',
+									type: 'kid',
+									step: 1,
+								})
+							}
+						>
 							<ProfileItem
 								user={user}
 								profile={{
@@ -110,7 +164,15 @@ const ProfileChoose: FC = () => {
 							/>
 						</div>
 
-						<div onClick={() => setPageStage('create-all-1')}>
+						<div
+							onClick={() =>
+								setPageState({
+									action: 'create',
+									type: 'all',
+									step: 1,
+								})
+							}
+						>
 							<ProfileItem
 								user={user}
 								profile={{
