@@ -1,5 +1,5 @@
 'use client'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import s from './Profile-choose.module.scss'
 import Image from 'next/image'
 import Checkbox from '@/components/ui/Checkbox/Checkbox'
@@ -56,19 +56,28 @@ const ProfileChoose: FC = () => {
 
 	const { user } = useAuth()
 
-	const [file, setFile] = useState<File | null>(null)
+	// const [file, setFile] = useState<File | null>(null)
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		console.log('rredf')
-		const formData = new FormData(e.currentTarget)
-		formData.append('inputName', 'sampleFile')
-		formData.append('file', file as Blob)
+	// const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	// 	e.preventDefault()
+	// 	console.log('rredf')
+	// 	const formData = new FormData(e.currentTarget)
+	// 	formData.append('inputName', 'sampleFile')
+	// 	formData.append('file', file as Blob)
 
-		await axios.post('/api/upload', formData).then(res => console.log(res.data))
-	}
+	// 	await axios.post('/api/upload', formData).then(res => console.log(res.data))
+	// }
 
-	if (pageState.action === 'create') {
+	useEffect(() => {
+		const originalBg = document.body.style.backgroundColor
+		document.body.style.backgroundColor = '#fff'
+
+		return () => {
+			document.body.style.backgroundColor = originalBg
+		}
+	}, [])
+
+	if (pageState.action === 'create' && pageState.step === 1) {
 		return (
 			<div className={s.container}>
 				<div className={s.top}>
@@ -90,11 +99,18 @@ const ProfileChoose: FC = () => {
 					<h1>Хто дивиметься?</h1>
 					<div className={s.profiles} style={{ gap: '20px' }}>
 						{pageState.type === 'all' && (
-							<ProfileNewItem type={ProfileType.ADULT} />
+							<div onClick={() => setPageState(prev => ({ ...prev, step: 2 }))}>
+								<ProfileNewItem type={ProfileType.ADULT} />
+							</div>
 						)}
-						<ProfileNewItem type={ProfileType.KID6} />
-						<ProfileNewItem type={ProfileType.KID12} />
-						<form
+						<div onClick={() => setPageState(prev => ({ ...prev, step: 2 }))}>
+							<ProfileNewItem type={ProfileType.KID6} />
+						</div>
+						<div onClick={() => setPageState(prev => ({ ...prev, step: 2 }))}>
+							<ProfileNewItem type={ProfileType.KID12} />
+						</div>
+
+						{/* <form
 							id='uploadForm'
 							method='post'
 							encType='multipart/form-data'
@@ -110,11 +126,57 @@ const ProfileChoose: FC = () => {
 								}}
 							/>
 							<input type='submit' value='Upload!' />
-						</form>
+						</form> */}
 					</div>
 				</div>
 				<div className={s.bot}>
 					<span className={s.step}>Крок {pageState.step} з 3</span>
+				</div>
+			</div>
+		)
+	}
+
+	if (pageState.action === 'create' && pageState.step === 2) {
+		return (
+			<div className={`${s.container} ${s.step2}`}>
+				<div className={s.top}>
+					<div
+						className={s.cross}
+						onClick={() =>
+							setPageState({
+								action: 'choose',
+								type: null,
+								step: 1,
+							})
+						}
+					>
+						<RxCross1 />
+					</div>
+				</div>
+				<div className={s.titles}>
+					<h1>Виберіть зображення профілю</h1>
+					<h3>Завантажте фото або виберіть одне з доступних зображень нижче</h3>
+				</div>
+				<div className={s.mid}>
+					<div className={s.left}>left</div>
+					<div className={s.right}>Right</div>
+				</div>
+				<div className={s.bot}>
+					<div className={s.content}>
+						<button
+							className={s.prev}
+							onClick={() =>
+								setPageState(prev => ({
+									...prev,
+									step: 1,
+								}))
+							}
+						>
+							Назад
+						</button>
+						<span className={s.step}>Крок {pageState.step} з 3</span>
+						<button className={s.next}>Далі</button>
+					</div>
 				</div>
 			</div>
 		)
