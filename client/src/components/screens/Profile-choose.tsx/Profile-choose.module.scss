@@ -141,6 +141,58 @@
 				position: sticky;
 				top: 130px;
 				height: fit-content;
+
+				label {
+					cursor: pointer;
+
+					.avatar {
+						border-radius: 50%;
+					}
+				}
+
+				.fieldContainer {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					gap: 20px;
+
+					input {
+						display: none;
+					}
+
+					.textBlock {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						gap: 10px;
+
+						label {
+							display: flex;
+							align-items: center;
+							gap: 5px;
+							color: var(--base-black);
+
+							svg {
+								font-size: 24px;
+							}
+
+							span {
+								font-size: 18px;
+								font-weight: 500;
+								line-height: 20px;
+								text-decoration: underline;
+							}
+						}
+
+						p {
+							font-size: 12px;
+							font-weight: 400;
+							line-height: 15px;
+							color: var(--base-black);
+							opacity: 0.5;
+						}
+					}
+				}
 			}
 
 			.right {

@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react'
 import s from './Profile-choose.module.scss'
 import Image from 'next/image'
 import Checkbox from '@/components/ui/Checkbox/Checkbox'
-import { useForm } from '@tanstack/react-form'
+import { FieldApi, useForm } from '@tanstack/react-form'
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 import ProfileItem from './Profile-item/Profile-item'
 import { IProfile, ProfileType } from '@/interfaces/profile.interface'
@@ -14,6 +14,8 @@ import { IUser } from '@/interfaces/user.interface'
 import { useActions } from '@/hooks/useActions'
 import { RxCross1 } from 'react-icons/rx'
 import ProfileNewItem from './Profile-new-item/Profile-new-item'
+import { MdOutlineCameraAlt } from 'react-icons/md'
+import SliderComponent from './Slider/Slider'
 
 const ProfileChoose: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
@@ -26,6 +28,7 @@ const ProfileChoose: FC = () => {
 		defaultValues: {
 			profile: null as IProfile | null,
 			rememberMe: false,
+			avatar: 'user-img.jpg',
 		},
 		onSubmit: async ({ value }) => {
 			if (!value.profile) return
@@ -56,17 +59,20 @@ const ProfileChoose: FC = () => {
 
 	const { user } = useAuth()
 
-	// const [file, setFile] = useState<File | null>(null)
+	type FileFieldProps = {
+		name: string
+		setValue: (value: string) => void
+		value?: string
+	}
 
-	// const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-	// 	e.preventDefault()
-	// 	console.log('rredf')
-	// 	const formData = new FormData(e.currentTarget)
-	// 	formData.append('inputName', 'sampleFile')
-	// 	formData.append('file', file as Blob)
-
-	// 	await axios.post('/api/upload', formData).then(res => console.log(res.data))
-	// }
+	const handleSetFile = async (file: File, field: FileFieldProps) => {
+		const formData = new FormData()
+		formData.append('file', file as Blob)
+		await axios.post('/api/upload', formData).then(res => {
+			console.log(res.data)
+			field.setValue(res.data)
+		})
+	}
 
 	useEffect(() => {
 		const originalBg = document.body.style.backgroundColor
@@ -109,24 +115,6 @@ const ProfileChoose: FC = () => {
 						<div onClick={() => setPageState(prev => ({ ...prev, step: 2 }))}>
 							<ProfileNewItem type={ProfileType.KID12} />
 						</div>
-
-						{/* <form
-							id='uploadForm'
-							method='post'
-							encType='multipart/form-data'
-							onSubmit={e => handleSubmit(e)}
-						>
-							<input
-								type='file'
-								name='sampleFile'
-								onChange={e => {
-									if (e.target.files && e.target.files[0]) {
-										setFile(e.target.files[0])
-									}
-								}}
-							/>
-							<input type='submit' value='Upload!' />
-						</form> */}
 					</div>
 				</div>
 				<div className={s.bot}>
@@ -158,8 +146,41 @@ const ProfileChoose: FC = () => {
 					<h3>Завантажте фото або виберіть одне з доступних зображень нижче</h3>
 				</div>
 				<div className={s.mid}>
-					<div className={s.left}>left</div>
-					<div className={s.right}>Right</div>
+					<form className={s.left}>
+						<form.Field name='avatar'>
+							{field => (
+								<div className={s.fieldContainer}>
+									<label htmlFor='avatar'>
+										<Image
+											className={s.avatar}
+											src={`${PF}storage/${field.state.value}`}
+											width={256}
+											height={256}
+											alt=''
+										/>
+									</label>
+									<input
+										type='file'
+										id='avatar'
+										name='avatar'
+										onChange={e => {
+											if (e.target.files && e.target.files[0]) {
+												handleSetFile(e.target.files[0], field)
+											}
+										}}
+									/>
+									<div className={s.textBlock}>
+										<label htmlFor='avatar'>
+											<MdOutlineCameraAlt />
+											<span>Завантажити своє фото</span>
+										</label>
+										<p>Максимальний розмір файлу 1 MB</p>
+									</div>
+								</div>
+							)}
+						</form.Field>
+					</form>
+					<div className={s.right}></div>
 				</div>
 				<div className={s.bot}>
 					<div className={s.content}>
