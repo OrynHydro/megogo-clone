@@ -131,7 +131,7 @@
 
 		.mid {
 			align-items: normal;
-			width: calc(100% - 600px);
+			width: 1260px;
 			margin-top: 30px;
 			gap: 0px;
 			flex-direction: row;
@@ -196,7 +196,11 @@
 			}
 
 			.right {
-				height: 150vh;
+				height: 155vh;
+				width: 700px;
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
 			}
 		}
 
@@ -206,6 +210,7 @@
 			left: 0;
 			height: 100px;
 			width: 100%;
+			z-index: 1;
 			background-color: #f2f3f5;
 
 			.content {

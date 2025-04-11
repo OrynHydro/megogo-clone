@@ -15,7 +15,8 @@ import { useActions } from '@/hooks/useActions'
 import { RxCross1 } from 'react-icons/rx'
 import ProfileNewItem from './Profile-new-item/Profile-new-item'
 import { MdOutlineCameraAlt } from 'react-icons/md'
-import SliderComponent from './Slider/Slider'
+import Carousel from './Carousel/Carousel'
+import { AvatarCarousel } from '@/utils/avatar-carousels'
 
 const ProfileChoose: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
@@ -63,6 +64,10 @@ const ProfileChoose: FC = () => {
 		name: string
 		setValue: (value: string) => void
 		value?: string
+	}
+
+	const handleSetAvatar = (path: string) => {
+		form.setFieldValue('avatar', path)
 	}
 
 	const handleSetFile = async (file: File, field: FileFieldProps) => {
@@ -180,7 +185,11 @@ const ProfileChoose: FC = () => {
 							)}
 						</form.Field>
 					</form>
-					<div className={s.right}></div>
+					<div className={s.right}>
+						{AvatarCarousel.map((item, index) => (
+							<Carousel key={index} slider={item} onClick={handleSetAvatar} />
+						))}
+					</div>
 				</div>
 				<div className={s.bot}>
 					<div className={s.content}>
