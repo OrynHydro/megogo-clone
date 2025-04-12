@@ -22,7 +22,10 @@ router.post('/set-profile', async (req: Request, res: Response) => {
 			}
 		)
 
-		res.cookie('accessProfileToken', accessProfileToken, { httpOnly: true })
+		res.cookie('accessProfileToken', accessProfileToken, {
+			httpOnly: true,
+			maxAge: 60 * 60 * 1000,
+		})
 
 		if (rememberMe) {
 			const refreshProfileToken = jwt.sign(
@@ -32,7 +35,10 @@ router.post('/set-profile', async (req: Request, res: Response) => {
 					expiresIn: '14d',
 				}
 			)
-			res.cookie('refreshProfileToken', refreshProfileToken, { httpOnly: true })
+			res.cookie('refreshProfileToken', refreshProfileToken, {
+				httpOnly: true,
+				maxAge: 14 * 24 * 60 * 60 * 1000,
+			})
 		}
 
 		res.status(200).json(profile)
@@ -77,7 +83,10 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 				{ expiresIn: '1h' }
 			)
 
-			res.cookie('accessProfileToken', newAccessToken, { httpOnly: true })
+			res.cookie('accessProfileToken', newAccessToken, {
+				httpOnly: true,
+				maxAge: 60 * 60 * 1000,
+			})
 
 			const dbProfile = await Profile.findById(
 				decodedRefreshToken._id

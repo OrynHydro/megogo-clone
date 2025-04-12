@@ -17,6 +17,8 @@ import ProfileNewItem from './Profile-new-item/Profile-new-item'
 import { MdOutlineCameraAlt } from 'react-icons/md'
 import Carousel from './Carousel/Carousel'
 import { AvatarCarousel } from '@/utils/avatar-carousels'
+import TextInput from '@/components/ui/Text-input/Text-input'
+import { useTextField } from '@/hooks/useTextField'
 
 const ProfileChoose: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
@@ -28,9 +30,15 @@ const ProfileChoose: FC = () => {
 	const form = useForm({
 		defaultValues: {
 			profile: null as IProfile | null,
+			profileType: null as ProfileType | null,
 			rememberMe: false,
 			avatar: 'user-img.jpg',
+			username: '',
+			isProfileExists: false,
 		},
+		// validators: {
+		// 	onChange: profileChooseSchema,
+		// },
 		onSubmit: async ({ value }) => {
 			if (!value.profile) return
 
@@ -95,13 +103,14 @@ const ProfileChoose: FC = () => {
 					<Image src={`${PF}/logo.svg`} alt='Logo' width={136} height={44} />
 					<div
 						className={s.cross}
-						onClick={() =>
+						onClick={() => {
 							setPageState({
 								action: 'choose',
 								type: null,
 								step: 1,
 							})
-						}
+							form.reset()
+						}}
 					>
 						<RxCross1 />
 					</div>
@@ -110,14 +119,29 @@ const ProfileChoose: FC = () => {
 					<h1>Хто дивиметься?</h1>
 					<div className={s.profiles} style={{ gap: '20px' }}>
 						{pageState.type === 'all' && (
-							<div onClick={() => setPageState(prev => ({ ...prev, step: 2 }))}>
+							<div
+								onClick={() => {
+									setPageState(prev => ({ ...prev, step: 2 }))
+									form.setFieldValue('profileType', ProfileType.ADULT)
+								}}
+							>
 								<ProfileNewItem type={ProfileType.ADULT} />
 							</div>
 						)}
-						<div onClick={() => setPageState(prev => ({ ...prev, step: 2 }))}>
+						<div
+							onClick={() => {
+								setPageState(prev => ({ ...prev, step: 2 }))
+								form.setFieldValue('profileType', ProfileType.KID6)
+							}}
+						>
 							<ProfileNewItem type={ProfileType.KID6} />
 						</div>
-						<div onClick={() => setPageState(prev => ({ ...prev, step: 2 }))}>
+						<div
+							onClick={() => {
+								setPageState(prev => ({ ...prev, step: 2 }))
+								form.setFieldValue('profileType', ProfileType.KID12)
+							}}
+						>
 							<ProfileNewItem type={ProfileType.KID12} />
 						</div>
 					</div>
@@ -135,13 +159,14 @@ const ProfileChoose: FC = () => {
 				<div className={s.top}>
 					<div
 						className={s.cross}
-						onClick={() =>
+						onClick={() => {
 							setPageState({
 								action: 'choose',
 								type: null,
 								step: 1,
 							})
-						}
+							form.reset()
+						}}
 					>
 						<RxCross1 />
 					</div>
@@ -195,18 +220,91 @@ const ProfileChoose: FC = () => {
 					<div className={s.content}>
 						<button
 							className={s.prev}
-							onClick={() =>
+							onClick={() => {
 								setPageState(prev => ({
 									...prev,
 									step: 1,
 								}))
-							}
+								form.setFieldValue('avatar', 'user-img.jpg')
+							}}
 						>
 							Назад
 						</button>
 						<span className={s.step}>Крок {pageState.step} з 3</span>
-						<button className={s.next}>Далі</button>
+						<button
+							className={s.next}
+							onClick={() =>
+								setPageState(prev => ({
+									...prev,
+									step: 3,
+								}))
+							}
+						>
+							Далі
+						</button>
 					</div>
+				</div>
+			</div>
+		)
+	}
+
+	if (pageState.action === 'create' && pageState.step === 3) {
+		return (
+			<div className={s.container}>
+				<div className={s.top}>
+					<Image src={`${PF}/logo.svg`} alt='Logo' width={136} height={44} />
+					<div
+						className={s.cross}
+						onClick={() => {
+							setPageState({
+								action: 'choose',
+								type: null,
+								step: 1,
+							})
+							form.reset()
+						}}
+					>
+						<RxCross1 />
+					</div>
+				</div>
+				<div className={s.mid}>
+					<div className={s.titles}>
+						<h1>Назвіть свій профіль</h1>
+						<h3>Ім’я справжнє чи супергеройське — вибирати вам</h3>
+					</div>
+					<div className={s.content}>
+						<Image
+							src={`${PF}/storage/${form.state.values.avatar}`}
+							alt=''
+							width={220}
+							height={220}
+						/>
+						<div className={s.inputBlock}>
+							<form.Field
+								name='username'
+								validators={{
+									onBlur: ({ value }) => {
+										value.trim() === ''
+											? form.state.fieldMeta.username.errors.push('ТЕСТ')
+											: undefined
+									},
+								}}
+							>
+								{field => (
+									<TextInput
+										{...useTextField(field)}
+										type='text'
+										placeholder="Ім'я"
+										maxLength={24}
+										blur
+									/>
+								)}
+							</form.Field>
+						</div>
+					</div>
+				</div>
+				<div className={s.bot}>
+					<span className={s.step}>Крок {pageState.step} з 3</span>
 				</div>
 			</div>
 		)
@@ -228,6 +326,7 @@ const ProfileChoose: FC = () => {
 								<div
 									onClick={() => {
 										field.setValue(user.profiles[0])
+										form.setFieldValue('isProfileExists', true)
 										form.handleSubmit()
 									}}
 								>

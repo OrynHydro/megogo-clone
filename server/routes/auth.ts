@@ -40,13 +40,19 @@ router.post('/', async (req: Request, res: Response) => {
 			expiresIn: '1h',
 		})
 
-		res.cookie('accessToken', accessToken, { httpOnly: true })
+		res.cookie('accessToken', accessToken, {
+			httpOnly: true,
+			maxAge: 60 * 60 * 1000,
+		})
 
 		if (rememberMe) {
 			const refreshToken = jwt.sign({ userId: user._id }, secretKeyRefresh, {
 				expiresIn: '14d',
 			})
-			res.cookie('refreshToken', refreshToken, { httpOnly: true })
+			res.cookie('refreshToken', refreshToken, {
+				httpOnly: true,
+				maxAge: 14 * 24 * 60 * 60 * 1000,
+			})
 		}
 
 		res.status(200).json(user)

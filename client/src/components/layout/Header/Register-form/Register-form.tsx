@@ -17,6 +17,8 @@ import { useActions } from '@/hooks/useActions'
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 import Checkbox from '@/components/ui/Checkbox/Checkbox'
 import { useRouter } from 'next/navigation'
+import TextInput from '@/components/ui/Text-input/Text-input'
+import { useTextField } from '@/hooks/useTextField'
 interface FormState {
 	step: number
 	loading: boolean
@@ -194,23 +196,12 @@ const RegisterForm: FC = () => {
 									<div className={s.inputBlock}>
 										<form.Field name='phone'>
 											{field => (
-												<div className={s.field}>
-													<input
-														className={s.phone}
-														type='tel'
-														placeholder='Телефон'
-														value={field.state.value}
-														onFocus={() => handleFocus(field)}
-														onChange={e => field.setValue(e.target.value)}
-													/>
-													{field.state.meta.errors.length > 0 && (
-														<p className={s.error}>
-															{field.state.meta.errors
-																.map((err: any) => err?.message)
-																.join(', ')}
-														</p>
-													)}
-												</div>
+												<TextInput
+													{...useTextField(field)}
+													focus={handleFocus}
+													type='tel'
+													placeholder='Телефон'
+												/>
 											)}
 										</form.Field>
 										<form.Field name='rememberMe'>
@@ -236,25 +227,12 @@ const RegisterForm: FC = () => {
 									<div className={s.inputBlock}>
 										<form.Field name='code'>
 											{field => (
-												<div className={s.field}>
-													<input
-														type='number'
-														placeholder='······'
-														value={form.state.values.code || ''}
-														onChange={e => {
-															const newValue = e.target.value.slice(0, 6)
-															field.setValue(Number(newValue))
-														}}
-														className={s.code}
-													/>
-													{field.state.meta.errors.length > 0 && (
-														<p className={s.error}>
-															{field.state.meta.errors
-																.map((err: any) => err?.message)
-																.join(', ')}
-														</p>
-													)}
-												</div>
+												<TextInput
+													{...useTextField(field)}
+													isCode={true}
+													type='number'
+													placeholder='······'
+												/>
 											)}
 										</form.Field>
 									</div>
