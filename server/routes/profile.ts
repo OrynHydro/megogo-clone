@@ -10,6 +10,14 @@ const router = Router()
 const secretKeyAccess = process.env.JWT_SECRET_ACCESS!
 const secretKeyRefresh = process.env.JWT_SECRET_REFRESH!
 
+router.post('/create-profile', async (req: Request, res: Response) => {
+	try {
+	} catch (err) {
+		console.error('Error creating profile:', err)
+		res.status(500).json({ message: 'Internal server error' })
+	}
+})
+
 router.post('/set-profile', async (req: Request, res: Response) => {
 	try {
 		const { profile, rememberMe } = req.body

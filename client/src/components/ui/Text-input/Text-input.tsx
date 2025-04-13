@@ -31,37 +31,42 @@ const TextInput: FC<TextInputProps> = ({
 
 	return (
 		<div className={s.field}>
-			<input
-				className={`${s.input} ${isCode ? s.code : ''}`}
-				type={type}
-				placeholder={placeholder}
-				value={field.value || ''}
-				maxLength={maxLength || undefined}
-				onFocus={() => {
-					if (focus) focus(field)
-				}}
-				onChange={e => {
-					if (isCode) {
-						const newValue = e.target.value.slice(0, 6)
-						field.setValue(Number(newValue))
-					} else if (maxLength) {
-						setCounter(e.target.value.length)
-						field.setValue(e.target.value)
-					} else {
-						field.setValue(e.target.value)
-					}
-				}}
-				onBlur={() => {
-					if (blur) {
-						field.handleBlur()
-					}
-				}}
-			/>
-			{maxLength && (
-				<span className={s.counter}>
-					{counter}/{maxLength}
-				</span>
-			)}
+			<div className={s.inputContainer}>
+				<input
+					className={`${s.input} ${isCode ? s.code : ''} ${
+						fieldErrors.length > 0 ? s.error : ''
+					}`}
+					type={type}
+					placeholder={placeholder}
+					value={field.value || ''}
+					maxLength={maxLength || undefined}
+					onFocus={() => {
+						if (focus) focus(field)
+					}}
+					onChange={e => {
+						if (isCode) {
+							const newValue = e.target.value.slice(0, 6)
+							field.setValue(Number(newValue))
+						} else if (maxLength) {
+							setCounter(e.target.value.length)
+							field.setValue(e.target.value)
+						} else {
+							field.setValue(e.target.value)
+						}
+					}}
+					onBlur={() => {
+						if (blur) {
+							field.handleBlur()
+						}
+					}}
+				/>
+				{maxLength && (
+					<span className={s.counter}>
+						{counter}/{maxLength}
+					</span>
+				)}
+			</div>
+
 			{fieldErrors.length > 0 && (
 				<p className={s.error}>{fieldErrors.join(', ')}</p>
 			)}

@@ -18,7 +18,7 @@ import { useTypedSelector } from '@/hooks/useTypedSelector'
 import Checkbox from '@/components/ui/Checkbox/Checkbox'
 import { useRouter } from 'next/navigation'
 import TextInput from '@/components/ui/Text-input/Text-input'
-import { useTextField } from '@/hooks/useTextField'
+import { useInput } from '@/hooks/useInput'
 interface FormState {
 	step: number
 	loading: boolean
@@ -197,7 +197,7 @@ const RegisterForm: FC = () => {
 										<form.Field name='phone'>
 											{field => (
 												<TextInput
-													{...useTextField(field)}
+													{...useInput(field)}
 													focus={handleFocus}
 													type='tel'
 													placeholder='Телефон'
@@ -207,7 +207,7 @@ const RegisterForm: FC = () => {
 										<form.Field name='rememberMe'>
 											{field => (
 												<Checkbox
-													field={field}
+													{...useInput(field)}
 													label="Запам'ятати мене"
 													color='#fb640b'
 												/>
@@ -228,7 +228,7 @@ const RegisterForm: FC = () => {
 										<form.Field name='code'>
 											{field => (
 												<TextInput
-													{...useTextField(field)}
+													{...useInput(field)}
 													isCode={true}
 													type='number'
 													placeholder='······'
