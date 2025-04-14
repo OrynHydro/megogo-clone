@@ -64,7 +64,7 @@ const Header: FC = () => {
 									width={32}
 									height={32}
 									alt='user'
-									src={`${PF}${activeProfile.avatar}`}
+									src={`${PF}${activeProfile?.avatar}`}
 								/>
 							</Link>
 						)}

@@ -14,4 +14,6 @@ export const profileTypeLabels: Record<ProfileType, string> = {
 	[ProfileType.ADULT]: 'Дорослий',
 }
 
-export interface IProfile extends IProfileGeneral {}
+export interface IProfile extends IProfileGeneral {
+	_id: string
+}

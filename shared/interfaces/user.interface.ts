@@ -1,6 +1,5 @@
-import { IProfile } from '@/interfaces/profile.interface'
-
+import { IProfileGeneral } from './profile.interface'
 export interface IUserBase {
 	phone: string
-	profiles: IProfile[]
+	profiles: IProfileGeneral[]
 }

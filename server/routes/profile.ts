@@ -1,8 +1,10 @@
 import { Router, Request, Response } from 'express'
-import User from '../models/User'
-import Profile from '../models/Profile'
+import User, { IUser } from '../models/User'
+import Profile, { IProfileBase } from '../models/Profile'
 import dotenv from 'dotenv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { ProfileType } from '../../client/src/interfaces/profile.interface'
+import { IProfileGeneral } from '@shared/interfaces/profile.interface'
 
 dotenv.config({ path: '.env.local' })
 const router = Router()
@@ -10,8 +12,43 @@ const router = Router()
 const secretKeyAccess = process.env.JWT_SECRET_ACCESS!
 const secretKeyRefresh = process.env.JWT_SECRET_REFRESH!
 
+interface IUserWithPopulatedProfiles extends IUser {
+	profiles: IProfileGeneral[]
+}
+
 router.post('/create-profile', async (req: Request, res: Response) => {
 	try {
+		const { profileType, username, avatar, user } = req.body
+
+		if (!Object.values(ProfileType).includes(profileType)) {
+			return res.status(400).json({ message: 'Invalid profileType value' })
+		}
+
+		const lastProfile = await Profile.findOne().sort('-megogoID')
+		const newMegogoID = lastProfile ? lastProfile.megogoID + 1 : 1
+
+		const users = await User.find({ phone: user.phone }).populate('profiles')
+		const dbUser = users[0] as IUserWithPopulatedProfiles
+
+		if (!dbUser) {
+			return res.status(404).json({ message: 'User not found' })
+		}
+
+		const profile = new Profile({
+			name: username,
+			type: profileType,
+			avatar: avatar,
+			user: dbUser._id,
+			megogoID: newMegogoID,
+		})
+
+		await profile.save()
+
+		dbUser.profiles.push(profile._id as IProfileBase)
+
+		await dbUser.save()
+
+		res.status(200).json(dbUser)
 	} catch (err) {
 		console.error('Error creating profile:', err)
 		res.status(500).json({ message: 'Internal server error' })

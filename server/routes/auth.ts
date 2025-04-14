@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
 import User from '../models/User'
-import Profile from '../models/Profile'
+import Profile, { IProfileBase } from '../models/Profile'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config({ path: '.env.local' })
@@ -14,15 +14,13 @@ router.post('/', async (req: Request, res: Response) => {
 	try {
 		const { phone, rememberMe } = req.body
 
-		let user = await User.findOne({ phone })
+		let user = await User.findOne({ phone }).populate('profiles')
 
 		if (!user) {
 			const lastProfile = await Profile.findOne().sort('-megogoID')
 			const newMegogoID = lastProfile ? lastProfile.megogoID + 1 : 1
 
-			user = await User.create({
-				phone,
-			})
+			user = await User.create({ phone })
 
 			const profile = await Profile.create({
 				name: 'User',
@@ -32,9 +30,11 @@ router.post('/', async (req: Request, res: Response) => {
 				user: user._id,
 			})
 
-			user.profiles.push(profile)
+			user.profiles.push(profile._id as IProfileBase)
 			await user.save()
 		}
+
+		const populatedUser = await User.findById(user._id).populate('profiles')
 
 		const accessToken = jwt.sign({ userId: user._id }, secretKeyAccess, {
 			expiresIn: '1h',
@@ -55,7 +55,7 @@ router.post('/', async (req: Request, res: Response) => {
 			})
 		}
 
-		res.status(200).json(user)
+		res.status(200).json(populatedUser)
 	} catch (error) {
 		console.error('Auth error:', error)
 		res.status(500).json({ message: 'Server error' })

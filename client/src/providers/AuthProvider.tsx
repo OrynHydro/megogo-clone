@@ -29,6 +29,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
 				if (profileData) {
 					setActiveProfile({
+						_id: profileData._id,
 						type: profileData.type,
 						name: profileData.name,
 						megogoID: profileData.megogoID,
@@ -43,7 +44,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 				}
 
 				const userRes = await axios.get('/api/users/get-by-token')
-				const userData = userRes.data
+				const userData = userRes.data as IUser
 
 				if (!userData) {
 					setUser(null)
@@ -57,9 +58,10 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 					router.push('/profile-choose')
 				}
 
+				console.log(userData)
+
 				setUser({
 					phone: userData.phone,
-					megogoID: userData.megogoID,
 					profiles: userData.profiles,
 				} as IUser)
 			} catch (error) {

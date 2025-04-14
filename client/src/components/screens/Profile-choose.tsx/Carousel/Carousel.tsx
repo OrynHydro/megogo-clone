@@ -92,7 +92,9 @@ const Carousel: FC<{
 							<div
 								className={s.slide}
 								key={index}
-								onClick={() => onClick(`avatars/${slider.folder}${avatar}`)}
+								onClick={() =>
+									onClick(`storage/avatars/${slider.folder}${avatar}`)
+								}
 							>
 								<div className={s.imgBlock}>
 									<Image

@@ -24,7 +24,7 @@ const UserSchema: Schema = new mongoose.Schema<IUser>(
 			required: true,
 			unique: true,
 		},
-		profiles: [ProfileSchema],
+		profiles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }],
 	},
 	{ timestamps: true, autoIndex: true }
 )

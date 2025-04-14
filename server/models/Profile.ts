@@ -1,13 +1,13 @@
 import mongoose, { Document } from 'mongoose'
-import { IProfileGeneral } from '../../shared/interfaces/profile.interface'
+import { IProfileGeneral } from '@shared/interfaces/profile.interface'
 
-interface IProfileBase extends IProfileGeneral, Document {}
+export interface IProfileBase extends IProfileGeneral, Document {}
 
 export const ProfileSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	type: {
 		type: String,
-		enum: ['family', 'child', 'kid', 'adult'],
+		enum: ['family', 'kid12', 'kid6', 'adult'],
 		default: 'family',
 	},
 	avatar: { type: String, required: true },

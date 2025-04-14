@@ -20,11 +20,12 @@ import ProfileNewItem from './Profile-new-item/Profile-new-item'
 import Carousel from './Carousel/Carousel'
 import { AvatarCarousel } from '@/utils/avatar-carousels'
 import { IProfile, ProfileType } from '@/interfaces/profile.interface'
+import { IUser } from '@/interfaces/user.interface'
 
 const ProfileChoose: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 	const { user } = useAuth()
-	const { setActiveProfile } = useActions()
+	const { setActiveProfile, setUser } = useActions()
 	const router = useRouter()
 
 	const [step, setStep] = useState(1)
@@ -42,17 +43,30 @@ const ProfileChoose: FC = () => {
 		},
 		onSubmit: async ({ value }) => {
 			if (!value.profile) {
-				if (!value.username) return
-				console.log('value', value)
+				if (!value.profileType) return
+				const { profileType, username, avatar } = value
+				const { data } = await axios.post('/api/profiles/create-profile', {
+					profileType:
+						ProfileType[profileType.toUpperCase() as keyof typeof ProfileType],
+					username,
+					avatar,
+					user: user,
+				})
+
+				if (data) {
+					setUser(data)
+					document.location.reload()
+				}
 				return
+			} else {
+				const { profile, rememberMe } = value
+				const { data } = await axios.post('/api/profiles/set-profile', {
+					profile,
+					rememberMe,
+				})
+				setActiveProfile(profile)
+				if (data) router.push('/')
 			}
-			const { profile, rememberMe } = value
-			const { data } = await axios.post('/api/profiles/set-profile', {
-				profile,
-				rememberMe,
-			})
-			setActiveProfile(profile)
-			if (data) router.push('/')
 		},
 	})
 
@@ -134,7 +148,7 @@ const ProfileChoose: FC = () => {
 								<label htmlFor='avatar'>
 									<Image
 										className={s.avatar}
-										src={`${PF}storage/${field.state.value}`}
+										src={`${PF}${field.state.value}`}
 										width={256}
 										height={256}
 										alt=''
@@ -203,7 +217,7 @@ const ProfileChoose: FC = () => {
 				</div>
 				<div className={s.content}>
 					<Image
-						src={`${PF}/storage/${form.state.values.avatar}`}
+						src={`${PF}${form.state.values.avatar}`}
 						alt=''
 						width={256}
 						height={256}
@@ -258,38 +272,65 @@ const ProfileChoose: FC = () => {
 			</div>
 			<div className={s.mid}>
 				<h1>Хто дивиться?</h1>
-				{user?.profiles.length === 1 && user?.profiles[0].type === 'family' && (
+
+				{user && (
 					<div className={s.profiles}>
-						<form.Field name='profile'>
-							{field => (
+						{user?.profiles.length === 1 &&
+						user?.profiles[0].type === 'family' ? (
+							<div className={s.profiles}>
+								<form.Field name='profile'>
+									{field => (
+										<div
+											onClick={() => {
+												field.setValue(user?.profiles[0])
+												form.setFieldValue('isProfileExists', true)
+												form.handleSubmit()
+											}}
+										>
+											<ProfileItem user={user} profile={user.profiles[0]} />
+										</div>
+									)}
+								</form.Field>
+
 								<div
 									onClick={() => {
-										field.setValue(user.profiles[0])
-										form.setFieldValue('isProfileExists', true)
-										form.handleSubmit()
+										setAction('create')
+										setPageType('kid')
+										setStep(1)
 									}}
 								>
-									<ProfileItem user={user} profile={user.profiles[0]} />
+									<ProfileItem
+										user={user}
+										profile={{
+											_id: '',
+											name: 'Додати дитячий',
+											type: ProfileType.KID12,
+											megogoID: 0,
+											avatar: null,
+										}}
+									/>
 								</div>
-							)}
-						</form.Field>
-						<div
-							onClick={() => {
-								setAction('create')
-								setPageType('kid')
-								setStep(1)
-							}}
-						>
-							<ProfileItem
-								user={user}
-								profile={{
-									name: 'Додати дитячий',
-									type: ProfileType.KID12,
-									megogoID: 0,
-									avatar: null,
-								}}
-							/>
-						</div>
+							</div>
+						) : (
+							user.profiles.map((profile, i) => (
+								<div key={i}>
+									<form.Field name='profile'>
+										{field => (
+											<div
+												onClick={() => {
+													field.setValue(profile)
+													form.setFieldValue('isProfileExists', true)
+													form.handleSubmit()
+												}}
+											>
+												<ProfileItem user={user} profile={profile} />
+											</div>
+										)}
+									</form.Field>
+								</div>
+							))
+						)}
+
 						<div
 							onClick={() => {
 								setAction('create')
@@ -300,6 +341,7 @@ const ProfileChoose: FC = () => {
 							<ProfileItem
 								user={user}
 								profile={{
+									_id: '',
 									name: 'Додати профіль',
 									type: ProfileType.FAMILY,
 									megogoID: 0,

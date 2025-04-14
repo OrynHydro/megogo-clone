@@ -46,7 +46,8 @@ const TextInput: FC<TextInputProps> = ({
 					onChange={e => {
 						if (isCode) {
 							const newValue = e.target.value.slice(0, 6)
-							field.setValue(Number(newValue))
+							const numericValue = Number(newValue)
+							field.setValue(isNaN(numericValue) ? '' : numericValue)
 						} else if (maxLength) {
 							setCounter(e.target.value.length)
 							field.setValue(e.target.value)

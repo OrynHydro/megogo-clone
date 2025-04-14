@@ -23,7 +23,10 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 			res.status(200).json(null)
 		}
 
-		const dbUser = await User.findById(decodedAccessToken.userId)
+		const dbUser = await User.findById(decodedAccessToken.userId).populate(
+			'profiles'
+		)
+		console.log(dbUser)
 		res.status(200).json(dbUser)
 	} catch (accessTokenError) {
 		try {
