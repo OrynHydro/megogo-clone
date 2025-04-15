@@ -57,14 +57,15 @@ router.post('/create-profile', async (req: Request, res: Response) => {
 
 router.post('/set-profile', async (req: Request, res: Response) => {
 	try {
-		const { profile, rememberMe } = req.body
+		const { profile, rememberMe: clientRememberMe } = req.body
+
+		const hasRefreshToken = Boolean(req.cookies?.refreshProfileToken)
+		const rememberMe = hasRefreshToken || clientRememberMe
 
 		const accessProfileToken = jwt.sign(
 			{ profileId: profile._id },
 			secretKeyAccess,
-			{
-				expiresIn: '1h',
-			}
+			{ expiresIn: '1h' }
 		)
 
 		res.cookie('accessProfileToken', accessProfileToken, {
@@ -76,9 +77,7 @@ router.post('/set-profile', async (req: Request, res: Response) => {
 			const refreshProfileToken = jwt.sign(
 				{ profileId: profile._id },
 				secretKeyRefresh,
-				{
-					expiresIn: '14d',
-				}
+				{ expiresIn: '14d' }
 			)
 			res.cookie('refreshProfileToken', refreshProfileToken, {
 				httpOnly: true,
@@ -109,7 +108,10 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 
 		const dbProfile = await Profile.findById(
 			decodedAccessToken.profileId
-		).populate('user')
+		).populate({
+			path: 'user',
+			populate: { path: 'profiles' },
+		})
 		res.status(200).json(dbProfile)
 	} catch (accessTokenError) {
 		try {
@@ -135,7 +137,11 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 
 			const dbProfile = await Profile.findById(
 				decodedRefreshToken._id
-			).populate('user')
+			).populate({
+				path: 'user',
+				populate: { path: 'profiles' },
+			})
+
 			res.status(200).json(dbProfile)
 		} catch (refreshTokenError) {
 			res.status(200).json(null)

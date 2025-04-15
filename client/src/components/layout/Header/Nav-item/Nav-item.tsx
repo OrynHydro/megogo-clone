@@ -6,6 +6,7 @@ import { TfiMoreAlt } from 'react-icons/tfi'
 import SubcategoryItem from '../Subcategory-item/Subcategory-item'
 import { ILangMenu } from '@/utils/lang-menu'
 import { useClickAway } from '@/hooks/useClickAway'
+import { useDropdown } from '@/hooks/useDropdown'
 
 interface NavItemProps {
 	item: IHeaderNav | ILangMenu
@@ -13,13 +14,13 @@ interface NavItemProps {
 }
 
 const NavItem: FC<NavItemProps> = ({ item, isMenu }) => {
-	const [isOpen, setIsOpen] = useState<boolean>(false)
-	const ref = useClickAway(() => setIsOpen(false))
+	// const [isOpen, setIsOpen] = useState<boolean>(false)
+	const langMenu = useDropdown('langMenu', s)
 	return (
 		<div
-			className={`${s.item} ${isMenu ? s.menu : ''} ${isOpen ? s.opened : ''}`}
-			onClick={() => isMenu && setIsOpen(!isOpen)}
-			ref={ref}
+			className={`${s.item} ${isMenu ? s.menu : ''} ${langMenu.openClass}`}
+			onClick={() => isMenu && langMenu.toggle()}
+			ref={langMenu.ref}
 		>
 			<div className={`${s.content} ${item.content ? '' : s.more}`}>
 				{item.content ? (
@@ -35,7 +36,11 @@ const NavItem: FC<NavItemProps> = ({ item, isMenu }) => {
 			{item.subcategory && (
 				<div className={s.subcategory}>
 					{item.subcategory.map((subitem, index) => (
-						<SubcategoryItem key={index} isOpen={isOpen} item={subitem} />
+						<SubcategoryItem
+							key={index}
+							isOpen={langMenu.isOpen}
+							item={subitem}
+						/>
 					))}
 				</div>
 			)}

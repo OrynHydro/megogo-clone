@@ -1,7 +1,12 @@
 'use client'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import {
+	useParams,
+	usePathname,
+	useRouter,
+	useSearchParams,
+} from 'next/navigation'
 import axios from 'axios'
 import { RxCross1 } from 'react-icons/rx'
 import { MdOutlineCameraAlt } from 'react-icons/md'
@@ -90,7 +95,7 @@ const ProfileChoose: FC = () => {
 		form.reset()
 		form.setFieldValue('rememberMe', remember)
 		setAction('choose')
-		setStep(1)
+		setStep(0)
 	}
 
 	const renderStep1 = () => (
@@ -257,12 +262,32 @@ const ProfileChoose: FC = () => {
 		</div>
 	)
 
-	if (action === 'create')
+	const searchParams = useSearchParams()
+
+	const initialized = useRef(false)
+
+	useEffect(() => {
+		if (initialized.current) return
+
+		const viewType = searchParams.get('view_type')
+		if (action === 'choose' && viewType === 'add') {
+			setStep(1)
+			setPageType('all')
+		}
+
+		initialized.current = true
+	}, [action, searchParams])
+
+	const shouldRenderSteps =
+		action === 'create' || (action === 'choose' && step > 0)
+
+	if (shouldRenderSteps) {
 		return step === 1
 			? renderStep1()
 			: step === 2
 			? renderStep2()
 			: renderStep3()
+	}
 
 	return (
 		<div className={s.container}>
@@ -287,7 +312,7 @@ const ProfileChoose: FC = () => {
 												form.handleSubmit()
 											}}
 										>
-											<ProfileItem user={user} profile={user.profiles[0]} />
+											<ProfileItem profile={user.profiles[0]} />
 										</div>
 									)}
 								</form.Field>
@@ -300,7 +325,6 @@ const ProfileChoose: FC = () => {
 									}}
 								>
 									<ProfileItem
-										user={user}
 										profile={{
 											_id: '',
 											name: 'Додати дитячий',
@@ -323,7 +347,7 @@ const ProfileChoose: FC = () => {
 													form.handleSubmit()
 												}}
 											>
-												<ProfileItem user={user} profile={profile} />
+												<ProfileItem profile={profile} />
 											</div>
 										)}
 									</form.Field>
@@ -339,7 +363,6 @@ const ProfileChoose: FC = () => {
 							}}
 						>
 							<ProfileItem
-								user={user}
 								profile={{
 									_id: '',
 									name: 'Додати профіль',

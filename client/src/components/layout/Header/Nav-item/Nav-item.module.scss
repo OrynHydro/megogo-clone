@@ -1,6 +1,7 @@
 .item {
 	position: relative;
 	cursor: pointer;
+	box-shadow: var(--box-shadow);
 
 	.content {
 		padding: 8px;
@@ -35,13 +36,13 @@
 	}
 
 	&:not(.menu):hover .subcategory,
-	&.opened .subcategory {
+	&.open .subcategory {
 		opacity: 1;
 		visibility: visible;
 	}
 
 	&:not(.menu):hover .content,
-	&.opened .content {
+	&.open .content {
 		background-color: #fff;
 		color: var(--hover-red);
 	}
@@ -50,7 +51,7 @@
 		color: var(--hover-red);
 	}
 
-	&:not(.opened).menu {
+	&:not(.open).menu {
 		.content:hover {
 			color: var(--hover-red);
 		}

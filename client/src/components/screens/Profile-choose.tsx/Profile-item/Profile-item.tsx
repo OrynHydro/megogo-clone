@@ -11,11 +11,11 @@ import { GoPlus } from 'react-icons/go'
 import TypeLabel from '../Type-label/Type-label'
 
 interface ProfileItemProps {
-	user: IUser
 	profile: IProfile
+	noLabel?: boolean
 }
 
-const ProfileItem: FC<ProfileItemProps> = ({ user, profile }) => {
+const ProfileItem: FC<ProfileItemProps> = ({ profile, noLabel }) => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 
 	return (
@@ -37,7 +37,9 @@ const ProfileItem: FC<ProfileItemProps> = ({ user, profile }) => {
 			</div>
 
 			<span className={s.name}>{profile.name}</span>
-			<TypeLabel type={profile.type} avatar={profile.avatar} />
+			{profile.type === 'family' && (
+				<TypeLabel type={profile.type} avatar={profile.avatar} />
+			)}
 		</div>
 	)
 }

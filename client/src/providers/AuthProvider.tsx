@@ -22,7 +22,12 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 	useEffect(() => {
 		const checkAuth = async () => {
 			try {
-				if (user) return
+				if (user) {
+					if (!activeProfile && pathname !== '/profile-choose') {
+						router.push('/profile-choose')
+					}
+					return
+				}
 
 				const profileRes = await axios.get('/api/profiles/get-by-token')
 				const profileData = profileRes.data
@@ -40,6 +45,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 						phone: profileData.user.phone,
 						profiles: profileData.user.profiles,
 					} as IUser)
+
 					return
 				}
 
@@ -58,8 +64,6 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 					router.push('/profile-choose')
 				}
 
-				console.log(userData)
-
 				setUser({
 					phone: userData.phone,
 					profiles: userData.profiles,
@@ -73,13 +77,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 		}
 
 		checkAuth()
-	}, [user, setUser])
-
-	useEffect(() => {
-		if (user && !activeProfile && pathname !== '/profile-choose') {
-			redirect('/profile-choose')
-		}
-	}, [user, activeProfile, pathname])
+	}, [user, activeProfile, pathname, setUser])
 
 	if (loading) {
 		return (
