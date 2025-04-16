@@ -1,20 +1,21 @@
-import { useRef, useState } from 'react'
 import { useClickAway } from './useClickAway'
+import { useActions } from '@/hooks/useActions'
+import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 export const useDropdown = (id: string, styles: { [key: string]: string }) => {
-	const [openId, setOpenId] = useState<string | null>(null)
+	const { setOpenId } = useActions()
+	const openId = useTypedSelector(state => state.dropdownModal.openId)
 
-	const registerDropdown = (id: string) => {
-		const isOpen = openId === id
-		const toggle = () => {
-			setOpenId(prev => (prev === id ? null : id))
-		}
-		const close = () => setOpenId(null)
+	const isOpen = openId === id
 
-		return { isOpen, toggle, close }
+	const toggle = () => {
+		setOpenId(isOpen ? null : id)
 	}
 
-	const { isOpen, toggle, close } = registerDropdown(id)
+	const close = () => {
+		setOpenId(null)
+	}
+
 	const ref = useClickAway(() => {
 		if (isOpen) close()
 	})

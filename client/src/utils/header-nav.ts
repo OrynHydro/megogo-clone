@@ -4,6 +4,21 @@ export interface IHeaderNav {
 	subcategory?: IHeaderNav[]
 }
 
+export const headerProfileDropdown: IHeaderNav[] = [
+	{
+		content: 'Передплати і платежі',
+		link: '/profile',
+	},
+	{
+		content: 'Мої пристрої',
+		link: '/devices',
+	},
+	{
+		content: 'Налаштування акаунту',
+		link: '/edit',
+	},
+]
+
 export const headerNav: IHeaderNav[] = [
 	{
 		content: 'ТЕЛЕКАНАЛИ',

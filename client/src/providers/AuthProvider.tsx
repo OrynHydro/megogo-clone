@@ -33,6 +33,9 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 				const profileData = profileRes.data
 
 				if (profileData) {
+					const userRes = await axios.get('/api/users/get-by-token')
+					const userData = userRes.data as IUser
+
 					setActiveProfile({
 						_id: profileData._id,
 						type: profileData.type,
@@ -41,10 +44,14 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 						avatar: profileData.avatar,
 					} as IProfile)
 
-					setUser({
-						phone: profileData.user.phone,
-						profiles: profileData.user.profiles,
-					} as IUser)
+					if (userData) {
+						setUser({
+							phone: userData.phone,
+							profiles: userData.profiles,
+						} as IUser)
+					} else {
+						setUser(null)
+					}
 
 					return
 				}

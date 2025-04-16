@@ -26,7 +26,6 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 		const dbUser = await User.findById(decodedAccessToken.userId).populate(
 			'profiles'
 		)
-		console.log(dbUser)
 		res.status(200).json(dbUser)
 	} catch (accessTokenError) {
 		try {
@@ -52,6 +51,19 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 		} catch (refreshTokenError) {
 			res.status(200).json(null)
 		}
+	}
+})
+
+router.post('/logout', async (req: Request, res: Response) => {
+	try {
+		res.clearCookie('accessToken')
+		res.clearCookie('refreshToken')
+		res.clearCookie('accessProfileToken')
+		res.clearCookie('refreshProfileToken')
+		res.status(200).json(null)
+	} catch (error) {
+		console.error('Logout error:', error)
+		res.status(500).json({ error: 'Logout error' })
 	}
 })
 

@@ -33,7 +33,7 @@ const ProfileChoose: FC = () => {
 	const { setActiveProfile, setUser } = useActions()
 	const router = useRouter()
 
-	const [step, setStep] = useState(1)
+	const [step, setStep] = useState(0)
 	const [action, setAction] = useState<'choose' | 'create'>('choose')
 	const [pageType, setPageType] = useState<'all' | 'kid' | null>(null)
 

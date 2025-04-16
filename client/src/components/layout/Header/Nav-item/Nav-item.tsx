@@ -18,7 +18,9 @@ const NavItem: FC<NavItemProps> = ({ item, isMenu }) => {
 	const langMenu = useDropdown('langMenu', s)
 	return (
 		<div
-			className={`${s.item} ${isMenu ? s.menu : ''} ${langMenu.openClass}`}
+			className={`${s.item} ${isMenu ? s.menu : ''} ${
+				isMenu && langMenu.openClass
+			}`}
 			onClick={() => isMenu && langMenu.toggle()}
 			ref={langMenu.ref}
 		>

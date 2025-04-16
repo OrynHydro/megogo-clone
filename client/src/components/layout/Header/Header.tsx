@@ -3,22 +3,24 @@ import { FC, useEffect, useState } from 'react'
 import s from './Header.module.scss'
 import Link from 'next/link'
 import Image from 'next/image'
-import { headerNav } from '@/utils/header-nav'
+import { headerNav, headerProfileDropdown } from '@/utils/header-nav'
 import NavItem from './Nav-item/Nav-item'
 import { IoSearchSharp } from 'react-icons/io5'
 import { langMenu } from '@/utils/lang-menu'
-import { useClickAway } from '@/hooks/useClickAway'
 import { useActions } from '@/hooks/useActions'
 import { useAuth } from '@/hooks/useAuth'
 import { useDropdown } from '@/hooks/useDropdown'
 import { IProfile } from '@/interfaces/profile.interface'
 import axios from 'axios'
 import { GoPlus } from 'react-icons/go'
+import SubcategoryItem from './Subcategory-item/Subcategory-item'
+import { GoDeviceMobile } from 'react-icons/go'
+import { TiStarOutline } from 'react-icons/ti'
 
 const Header: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 
-	const { changeModalState, setActiveProfile } = useActions()
+	const { changeModalState, setActiveProfile, setUser } = useActions()
 	const { user, activeProfile } = useAuth()
 
 	const dropdownSearch = useDropdown('search', s)
@@ -36,6 +38,17 @@ const Header: FC = () => {
 		}
 	}
 
+	const logoutHandler = async () => {
+		try {
+			await axios.post('/api/users/logout')
+			setUser(null)
+			setActiveProfile(null)
+			document.location.reload()
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	const renderProfiles = () => {
 		if (user?.profiles) {
 			return (
@@ -46,6 +59,7 @@ const Header: FC = () => {
 							<div key={profile._id} className={s.profile}>
 								<Image
 									src={`${PF}${profile.avatar}`}
+									className={s.img}
 									alt='user'
 									width={32}
 									height={32}
@@ -55,7 +69,9 @@ const Header: FC = () => {
 							</div>
 						))}
 					<Link className={s.profile} href={'/profile-choose?view_type=add'}>
-						<GoPlus className={s.img} />
+						<div className={s.img}>
+							<GoPlus fontSize={16} strokeWidth={0.5} />
+						</div>
 						<span>Додати</span>
 					</Link>
 				</div>
@@ -71,7 +87,8 @@ const Header: FC = () => {
 					<div className={s.left}>
 						<Link href='/' className={s.logo}>
 							<Image
-								src={`${PF}/logo-white.svg`}
+								src={`${PF}logo-white.svg`}
+								priority
 								alt='Logo'
 								width={100}
 								height={50}
@@ -139,6 +156,28 @@ const Header: FC = () => {
 										</li>
 										<li className={s.megogoId}>
 											Megogo ID: {activeProfile?.megogoID}
+										</li>
+										<li>
+											{headerProfileDropdown.map((item, index) => (
+												<SubcategoryItem key={index} item={item} profile />
+											))}
+										</li>
+										<li className={s.loyalty}>
+											<div className={s.item}>
+												<GoDeviceMobile fontSize={24} strokeWidth={0.5} />
+												<Link href={'/'}>Підключити передплату</Link>
+											</div>
+											<div className={s.item}>
+												<TiStarOutline fontSize={24} />
+												<Link href={'/'}>25 бонусів</Link>
+											</div>
+										</li>
+										<li>
+											<SubcategoryItem
+												item={{ content: 'Вийти з акаунту', link: '' }}
+												profile
+												onClick={logoutHandler}
+											/>
 										</li>
 									</ul>
 								</div>
