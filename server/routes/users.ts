@@ -1,7 +1,10 @@
 import { Router, Request, Response } from 'express'
-import User from '../models/User'
+import User, { IUser } from '../models/User'
+import Profile from '../models/Profile'
 import dotenv from 'dotenv'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { IProfileBase } from './../models/Profile'
+import { HydratedDocument } from 'mongoose'
 
 dotenv.config({ path: '.env.local' })
 const router = Router()
@@ -44,13 +47,68 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 				{ expiresIn: '1h' }
 			)
 
-			res.cookie('accessToken', newAccessToken, { httpOnly: true })
+			res.cookie('accessToken', newAccessToken, {
+				httpOnly: true,
+				maxAge: 60 * 60 * 1000,
+			})
 
 			const dbUser = await User.findById(decodedRefreshToken.userId)
 			res.status(200).json(dbUser)
 		} catch (refreshTokenError) {
 			res.status(200).json(null)
 		}
+	}
+})
+
+router.post('/set-by-profile', async (req: Request, res: Response) => {
+	const accessProfileToken = req.cookies['accessProfileToken']
+	const refreshProfileToken = req.cookies['refreshProfileToken']
+	try {
+		const decodedAccessProfileToken = jwt.verify(
+			accessProfileToken,
+			secretKeyAccess
+		) as JwtPayload
+
+		if (!decodedAccessProfileToken || !decodedAccessProfileToken.profileId) {
+			res.status(200).json(null)
+		}
+
+		const dbProfile = (await Profile.findById(
+			decodedAccessProfileToken.profileId
+		).populate('user')) as HydratedDocument<IProfileBase> & {
+			user: IUser
+		}
+
+		if (!dbProfile) {
+			res.status(200).json(null)
+		}
+
+		if (refreshProfileToken) {
+			const newRefreshToken = jwt.sign(
+				{ userId: dbProfile.user._id },
+				secretKeyRefresh,
+				{ expiresIn: '14d' }
+			)
+
+			res.cookie('refreshToken', newRefreshToken, {
+				httpOnly: true,
+				maxAge: 14 * 24 * 60 * 60 * 1000,
+			})
+		}
+		const newAccessToken = jwt.sign(
+			{ userId: dbProfile.user._id },
+			secretKeyAccess,
+			{ expiresIn: '1h' }
+		)
+
+		res.cookie('accessToken', newAccessToken, {
+			httpOnly: true,
+			maxAge: 60 * 60 * 1000,
+		})
+
+		res.status(200).json(dbProfile.user)
+	} catch (error) {
+		res.status(200).json(null)
 	}
 })
 

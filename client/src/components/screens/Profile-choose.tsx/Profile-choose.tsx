@@ -288,7 +288,6 @@ const ProfileChoose: FC = () => {
 			? renderStep2()
 			: renderStep3()
 	}
-
 	return (
 		<div className={s.container}>
 			<div className={s.top}>

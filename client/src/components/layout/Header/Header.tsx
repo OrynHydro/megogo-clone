@@ -55,8 +55,8 @@ const Header: FC = () => {
 				<div className={s.profiles}>
 					{user.profiles
 						.filter(profile => profile._id !== activeProfile?._id)
-						.map(profile => (
-							<div key={profile._id} className={s.profile}>
+						.map((profile, index) => (
+							<div key={index} className={s.profile}>
 								<Image
 									src={`${PF}${profile.avatar}`}
 									className={s.img}

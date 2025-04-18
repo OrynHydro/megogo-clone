@@ -8,12 +8,12 @@ import { Provider } from 'react-redux'
 import { store } from '@/store/store'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import s from './AuthProvider.module.scss'
-import { redirect, usePathname, useRouter } from 'next/navigation'
-import ProfileChoose from '@/components/screens/Profile-choose.tsx/Profile-choose'
+import { usePathname, useRouter } from 'next/navigation'
 import { IProfile } from '@/interfaces/profile.interface'
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 	const [loading, setLoading] = useState<boolean>(true)
+	const [redirecting, setRedirecting] = useState<boolean>(false)
 	const { user, activeProfile } = useAuth()
 	const { setUser, setActiveProfile } = useActions()
 	const router = useRouter()
@@ -24,8 +24,11 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 			try {
 				if (user) {
 					if (!activeProfile && pathname !== '/profile-choose') {
-						router.push('/profile-choose')
+						setRedirecting(true)
+						await router.push('/profile-choose')
+						return
 					}
+					setLoading(false)
 					return
 				}
 
@@ -36,6 +39,19 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 					const userRes = await axios.get('/api/users/get-by-token')
 					const userData = userRes.data as IUser
 
+					if (!userData) {
+						const newUser = await axios.post('/api/users/set-by-profile')
+						setUser({
+							phone: newUser.data.phone,
+							profiles: newUser.data.profiles,
+						} as IUser)
+					} else {
+						setUser({
+							phone: userData.phone,
+							profiles: userData.profiles,
+						} as IUser)
+					}
+
 					setActiveProfile({
 						_id: profileData._id,
 						type: profileData.type,
@@ -43,50 +59,56 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 						megogoID: profileData.megogoID,
 						avatar: profileData.avatar,
 					} as IProfile)
-
-					if (userData) {
-						setUser({
-							phone: userData.phone,
-							profiles: userData.profiles,
-						} as IUser)
-					} else {
-						setUser(null)
-					}
-
 					return
 				}
 
 				const userRes = await axios.get('/api/users/get-by-token')
 				const userData = userRes.data as IUser
 
-				if (!userData) {
+				if (!userData && pathname !== '/') {
 					setUser(null)
-					return
+					setRedirecting(true)
+					await router.push('/')
+				} else if (userData) {
+					setUser({
+						phone: userData.phone,
+						profiles: userData.profiles,
+					} as IUser)
 				}
-
-				if (
-					userData.profiles.length === 1 &&
-					userData.profiles[0].type === 'family'
-				) {
-					router.push('/profile-choose')
-				}
-
-				setUser({
-					phone: userData.phone,
-					profiles: userData.profiles,
-				} as IUser)
 			} catch (error) {
 				console.error('Auth check failed:', error)
 				setUser(null)
 			} finally {
-				setLoading(false)
+				if (!redirecting) {
+					setLoading(false)
+				}
 			}
 		}
 
-		checkAuth()
-	}, [user, activeProfile, pathname, setUser])
+		void checkAuth()
+	}, [
+		user,
+		activeProfile,
+		pathname,
+		setUser,
+		setActiveProfile,
+		router,
+		redirecting,
+	])
 
-	if (loading) {
+	// useEffect(() => {
+	// 	if (
+	// 		redirecting &&
+	// 		((user && !activeProfile && pathname === '/profile-choose') ||
+	// 			(!user && pathname === '/'))
+	// 	) {
+	// 		setRedirecting(false)
+	// 		setLoading(false)
+	// 		console.log('Navigation completed')
+	// 	}
+	// }, [pathname, redirecting, user, activeProfile])
+
+	if (loading || redirecting) {
 		return (
 			<div className={s.loading}>
 				<DotLottieReact
