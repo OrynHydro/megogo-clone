@@ -37,6 +37,30 @@
 			opacity: 0;
 		}
 
+		.overlay {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 128px;
+			height: 128px;
+			background: transparent;
+			visibility: hidden;
+			border-radius: 50%;
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
+			padding-bottom: 20px;
+			font-size: 11px;
+			font-weight: 600;
+			line-height: 12px;
+			color: #fff;
+
+			&.open {
+				background: rgba(0, 0, 0, 0.5);
+				visibility: visible;
+			}
+		}
+
 		.img {
 			border-radius: 50%;
 			object-fit: cover;

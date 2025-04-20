@@ -24,7 +24,11 @@ import ProfileItem from './Profile-item/Profile-item'
 import ProfileNewItem from './Profile-new-item/Profile-new-item'
 import Carousel from './Carousel/Carousel'
 import { AvatarCarousel } from '@/utils/avatar-carousels'
-import { IProfile, ProfileType } from '@/interfaces/profile.interface'
+import {
+	IProfile,
+	ProfileType,
+	profileTypeLabels,
+} from '@/interfaces/profile.interface'
 import { IUser } from '@/interfaces/user.interface'
 
 const ProfileChoose: FC = () => {
@@ -34,7 +38,7 @@ const ProfileChoose: FC = () => {
 	const router = useRouter()
 
 	const [step, setStep] = useState(0)
-	const [action, setAction] = useState<'choose' | 'create'>('choose')
+	const [action, setAction] = useState<'choose' | 'create' | 'edit'>('choose')
 	const [pageType, setPageType] = useState<'all' | 'kid' | null>(null)
 
 	const form = useForm({
@@ -63,7 +67,7 @@ const ProfileChoose: FC = () => {
 					document.location.reload()
 				}
 				return
-			} else {
+			} else if (action !== 'edit') {
 				const { profile, rememberMe } = value
 				const { data } = await axios.post('/api/profiles/set-profile', {
 					profile,
@@ -71,6 +75,8 @@ const ProfileChoose: FC = () => {
 				})
 				setActiveProfile(profile)
 				if (data) router.push('/')
+			} else {
+				console.log('sosal')
 			}
 		},
 	})
@@ -211,22 +217,37 @@ const ProfileChoose: FC = () => {
 		<div className={s.container}>
 			<div className={s.top}>
 				<Image src={`${PF}/logo.svg`} alt='Logo' width={136} height={44} />
-				<div className={s.cross} onClick={resetCreate}>
+				<div
+					className={s.cross}
+					style={{ visibility: action === 'edit' ? 'hidden' : 'visible' }}
+					onClick={resetCreate}
+				>
 					<RxCross1 />
 				</div>
 			</div>
 			<div className={s.mid}>
 				<div className={s.titles}>
-					<h1>Назвіть свій профіль</h1>
-					<h3>Ім’я справжнє чи супергеройське — вибирати вам</h3>
+					<h1>
+						{action === 'edit'
+							? 'Налаштування профілю'
+							: 'Назвіть свій профіль'}{' '}
+					</h1>
+					{action !== 'edit' && (
+						<h3>Ім’я справжнє чи супергеройське — вибирати вам</h3>
+					)}
 				</div>
 				<div className={s.content}>
 					<Image
-						src={`${PF}${form.state.values.avatar}`}
+						src={`${
+							action === 'edit' && form.state.values.profile
+								? PF + (form.state.values.profile.avatar ?? '')
+								: PF + form.state.values.avatar
+						}`}
 						alt=''
 						width={256}
 						height={256}
 					/>
+
 					<div className={s.inputBlock}>
 						<form.Field
 							name='username'
@@ -245,11 +266,33 @@ const ProfileChoose: FC = () => {
 								/>
 							)}
 						</form.Field>
+						{action === 'edit' && (
+							<span className={s.profileType}>
+								Тип профілю:{' '}
+								<b>
+									{form.state.values.profile?.type
+										? profileTypeLabels[form.state.values.profile?.type]
+										: 'Сімейний'}
+								</b>
+							</span>
+						)}
+
 						<div className={`${s.buttonBlock} ${s.step3}`}>
 							<button className={s.next} onClick={() => form.handleSubmit()}>
-								Створити
+								{action === 'edit' ? 'Зберегти' : 'Створити'}
 							</button>
-							<button className={s.prev} onClick={() => setStep(2)}>
+							<button
+								className={s.prev}
+								onClick={() => {
+									if (action === 'edit') {
+										setAction('choose')
+										setStep(0)
+										form.reset()
+									} else {
+										setStep(2)
+									}
+								}}
+							>
 								Скасувати
 							</button>
 						</div>
@@ -279,20 +322,35 @@ const ProfileChoose: FC = () => {
 	}, [action, searchParams])
 
 	const shouldRenderSteps =
-		action === 'create' || (action === 'choose' && step > 0)
+		action === 'create' ||
+		action === 'edit' ||
+		(action === 'choose' && step > 0)
 
 	if (shouldRenderSteps) {
-		return step === 1
-			? renderStep1()
-			: step === 2
-			? renderStep2()
-			: renderStep3()
+		if (step === 1) return renderStep1()
+		if (step === 2) return renderStep2()
+		if (step === 3) return renderStep3()
 	}
+
 	return (
 		<div className={s.container}>
 			<div className={s.top}>
 				<Image src={`${PF}/logo.svg`} alt='Logo' width={136} height={44} />
-				<span className={s.change}>Редагувати профілі</span>
+				{action === 'edit' ? (
+					<button
+						className={s.editProfileBtn}
+						onClick={() => {
+							setAction('choose')
+							setStep(0)
+						}}
+					>
+						Готово
+					</button>
+				) : (
+					<span className={s.edit} onClick={() => setAction('edit')}>
+						Редагувати профілі
+					</span>
+				)}
 			</div>
 			<div className={s.mid}>
 				<h1>Хто дивиться?</h1>
@@ -308,10 +366,17 @@ const ProfileChoose: FC = () => {
 											onClick={() => {
 												field.setValue(user?.profiles[0])
 												form.setFieldValue('isProfileExists', true)
-												form.handleSubmit()
+												if (action === 'edit') {
+													setStep(3)
+												} else {
+													form.handleSubmit()
+												}
 											}}
 										>
-											<ProfileItem profile={user.profiles[0]} />
+											<ProfileItem
+												profile={user.profiles[0]}
+												isEdit={action === 'edit'}
+											/>
 										</div>
 									)}
 								</form.Field>
@@ -343,10 +408,18 @@ const ProfileChoose: FC = () => {
 												onClick={() => {
 													field.setValue(profile)
 													form.setFieldValue('isProfileExists', true)
-													form.handleSubmit()
+													if (action === 'edit') {
+														setStep(3)
+														form.setFieldValue('username', profile.name)
+													} else {
+														form.handleSubmit()
+													}
 												}}
 											>
-												<ProfileItem profile={profile} />
+												<ProfileItem
+													profile={profile}
+													isEdit={action === 'edit'}
+												/>
 											</div>
 										)}
 									</form.Field>
@@ -374,7 +447,8 @@ const ProfileChoose: FC = () => {
 					</div>
 				)}
 			</div>
-			<div className={s.bot}>
+
+			<div className={`${s.bot} ${action === 'edit' ? s.editProfile : ''}`}>
 				<div className={s.checkboxBlock}>
 					<form.Field name='rememberMe'>
 						{field => (
@@ -386,6 +460,7 @@ const ProfileChoose: FC = () => {
 						)}
 					</form.Field>
 				</div>
+
 				<div className={s.hint}>
 					<span>
 						Тільки ви користуєтеся цим пристроєм? Встановіть автоматичний вхід і

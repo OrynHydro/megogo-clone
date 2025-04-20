@@ -12,10 +12,10 @@ import TypeLabel from '../Type-label/Type-label'
 
 interface ProfileItemProps {
 	profile: IProfile
-	noLabel?: boolean
+	isEdit?: boolean
 }
 
-const ProfileItem: FC<ProfileItemProps> = ({ profile, noLabel }) => {
+const ProfileItem: FC<ProfileItemProps> = ({ profile, isEdit }) => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 
 	return (
@@ -34,6 +34,11 @@ const ProfileItem: FC<ProfileItemProps> = ({ profile, noLabel }) => {
 						<GoPlus fontSize={48} />
 					</div>
 				)}
+				<div
+					className={`${s.overlay} ${isEdit && profile.avatar ? s.open : ''}`}
+				>
+					Змінити
+				</div>
 			</div>
 
 			<span className={s.name}>{profile.name}</span>

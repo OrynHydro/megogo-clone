@@ -26,31 +26,28 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 					if (!activeProfile && pathname !== '/profile-choose') {
 						setRedirecting(true)
 						await router.push('/profile-choose')
-						return
 					}
-					setLoading(false)
-					return
+					return setLoading(false)
 				}
 
-				const profileRes = await axios.get('/api/profiles/get-by-token')
-				const profileData = profileRes.data
+				const [profileRes, userRes] = await Promise.allSettled([
+					axios.get('/api/profiles/get-by-token'),
+					axios.get('/api/users/get-by-token'),
+				])
+
+				const profileData =
+					profileRes.status === 'fulfilled' ? profileRes.value.data : null
+				const userData =
+					userRes.status === 'fulfilled' ? userRes.value.data : null
 
 				if (profileData) {
-					const userRes = await axios.get('/api/users/get-by-token')
-					const userData = userRes.data as IUser
+					const userToSet =
+						userData ?? (await axios.post('/api/users/set-by-profile')).data
 
-					if (!userData) {
-						const newUser = await axios.post('/api/users/set-by-profile')
-						setUser({
-							phone: newUser.data.phone,
-							profiles: newUser.data.profiles,
-						} as IUser)
-					} else {
-						setUser({
-							phone: userData.phone,
-							profiles: userData.profiles,
-						} as IUser)
-					}
+					setUser({
+						phone: userToSet.phone,
+						profiles: userToSet.profiles,
+					})
 
 					setActiveProfile({
 						_id: profileData._id,
@@ -58,14 +55,8 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 						name: profileData.name,
 						megogoID: profileData.megogoID,
 						avatar: profileData.avatar,
-					} as IProfile)
-					return
-				}
-
-				const userRes = await axios.get('/api/users/get-by-token')
-				const userData = userRes.data as IUser
-
-				if (!userData && pathname !== '/') {
+					})
+				} else if (!userData && pathname !== '/') {
 					setUser(null)
 					setRedirecting(true)
 					await router.push('/')
@@ -73,7 +64,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 					setUser({
 						phone: userData.phone,
 						profiles: userData.profiles,
-					} as IUser)
+					})
 				}
 			} catch (error) {
 				console.error('Auth check failed:', error)

@@ -52,7 +52,9 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 				maxAge: 60 * 60 * 1000,
 			})
 
-			const dbUser = await User.findById(decodedRefreshToken.userId)
+			const dbUser = await User.findById(decodedRefreshToken.userId).populate(
+				'profiles'
+			)
 			res.status(200).json(dbUser)
 		} catch (refreshTokenError) {
 			res.status(200).json(null)
@@ -75,7 +77,12 @@ router.post('/set-by-profile', async (req: Request, res: Response) => {
 
 		const dbProfile = (await Profile.findById(
 			decodedAccessProfileToken.profileId
-		).populate('user')) as HydratedDocument<IProfileBase> & {
+		).populate({
+			path: 'user',
+			populate: {
+				path: 'profiles',
+			},
+		})) as HydratedDocument<IProfileBase> & {
 			user: IUser
 		}
 

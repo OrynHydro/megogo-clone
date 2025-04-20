@@ -136,7 +136,7 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 			})
 
 			const dbProfile = await Profile.findById(
-				decodedRefreshToken._id
+				decodedRefreshToken.profileId
 			).populate({
 				path: 'user',
 				populate: { path: 'profiles' },

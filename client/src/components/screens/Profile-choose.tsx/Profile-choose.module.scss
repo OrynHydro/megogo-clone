@@ -15,8 +15,9 @@
 		justify-content: space-between;
 		margin-top: 10px;
 		padding: 0 8px;
+		user-select: none;
 
-		.change {
+		.edit {
 			display: inline-block;
 			height: 48px;
 			font-size: 20px;
@@ -25,6 +26,23 @@
 			color: var(--base-black);
 			text-decoration: underline;
 			cursor: pointer;
+		}
+
+		.editProfileBtn {
+			min-width: 140px;
+
+			border-radius: 10px;
+			cursor: pointer;
+			font-size: 18px;
+			font-weight: 500;
+			line-height: 20px;
+			padding: 14px 30px;
+			color: #fff;
+			background-color: var(--base-black);
+			&:hover {
+				background: var(--blue-gradient);
+				border-color: transparent;
+			}
 		}
 
 		.cross {
@@ -77,15 +95,27 @@
 			.inputBlock {
 				display: flex;
 				flex-direction: column;
-				align-items: center;
 				gap: 40px;
 				width: 400px;
+
+				.profileType {
+					position: relative;
+					top: -20px;
+					font-size: 18px;
+					font-weight: 400;
+					line-height: 24px;
+					color: var(--base-black);
+				}
 			}
 		}
 	}
 
 	.bot {
 		position: relative;
+
+		&.editProfile {
+			visibility: hidden;
+		}
 
 		.checkboxBlock {
 			&:hover + .hint {

@@ -27,7 +27,9 @@ const TextInput: FC<TextInputProps> = ({
 	maxLength,
 	blur,
 }) => {
-	const [counter, setCounter] = useState<number>(0)
+	const [counter, setCounter] = useState<number>(
+		typeof field.value === 'string' ? field.value.length : 0
+	)
 
 	return (
 		<div className={s.field}>
