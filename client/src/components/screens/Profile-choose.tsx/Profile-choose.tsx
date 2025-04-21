@@ -76,7 +76,31 @@ const ProfileChoose: FC = () => {
 				setActiveProfile(profile)
 				if (data) router.push('/')
 			} else {
-				console.log('sosal')
+				const [avatar, username] = [
+					value.avatar !== value.profile?.avatar && initializedAvatar.current
+						? 'storage/' + value.avatar
+						: value.profile?.avatar,
+					value.username !== value.profile?.name
+						? value.username
+						: value.profile?.name,
+				]
+				await axios.put(`/api/profiles/edit-profile/${value.profile?._id}`, {
+					avatar,
+					username,
+				})
+				if (!user) return
+				const updatedUser: IUser = {
+					...user,
+					profiles: user.profiles.map(profile =>
+						profile._id === value.profile?._id
+							? { ...profile, avatar, name: username }
+							: profile
+					),
+				}
+				initializedAvatar.current = false
+				setUser(updatedUser)
+				setAction('choose')
+				setStep(0)
 			}
 		},
 	})
@@ -140,6 +164,8 @@ const ProfileChoose: FC = () => {
 		</div>
 	)
 
+	const initializedAvatar = useRef(false)
+
 	const renderStep2 = () => (
 		<div className={`${s.container} ${s.step2}`}>
 			<div className={s.top}>
@@ -159,7 +185,16 @@ const ProfileChoose: FC = () => {
 								<label htmlFor='avatar'>
 									<Image
 										className={s.avatar}
-										src={`${PF}${field.state.value}`}
+										src={`${
+											action === 'edit'
+												? `${
+														PF +
+														(initializedAvatar.current
+															? 'storage/' + field.state.value
+															: form.state.values.profile?.avatar ?? '')
+												  }`
+												: `${PF + 'storage/' + field.state.value}`
+										}`}
 										width={256}
 										height={256}
 										alt=''
@@ -168,10 +203,13 @@ const ProfileChoose: FC = () => {
 								<input
 									type='file'
 									id='avatar'
-									onChange={e =>
-										e.target.files?.[0] &&
-										uploadFile(e.target.files[0], field.setValue)
-									}
+									onChange={e => {
+										if (e.target.files?.[0]) {
+											uploadFile(e.target.files[0], field.setValue)
+										}
+
+										initializedAvatar.current = true
+									}}
 								/>
 								<div className={s.textBlock}>
 									<label htmlFor='avatar'>
@@ -188,7 +226,10 @@ const ProfileChoose: FC = () => {
 						<Carousel
 							key={i}
 							slider={item}
-							onClick={val => form.setFieldValue('avatar', val)}
+							onClick={val => {
+								form.setFieldValue('avatar', val)
+								initializedAvatar.current = true
+							}}
 						/>
 					))}
 				</div>
@@ -198,15 +239,24 @@ const ProfileChoose: FC = () => {
 					<button
 						className={s.prev}
 						onClick={() => {
-							setStep(1)
-							form.setFieldValue('avatar', 'user-img.jpg')
+							if (action === 'edit') {
+								setStep(3)
+								form.setFieldValue(
+									'avatar',
+									form.state.values.profile?.avatar ?? ''
+								)
+							} else {
+								setStep(1)
+								form.setFieldValue('avatar', 'user-img.jpg')
+							}
 						}}
 					>
-						Назад
+						{action === 'edit' ? 'Скасувати' : 'Назад'}
 					</button>
-					<span className={s.step}>Крок 2 з 3</span>
+					{action !== 'edit' && <span className={s.step}>Крок 2 з 3</span>}
+
 					<button className={s.next} onClick={() => setStep(3)}>
-						Далі
+						{action === 'edit' ? 'Зберегти' : 'Далі'}
 					</button>
 				</div>
 			</div>
@@ -237,16 +287,29 @@ const ProfileChoose: FC = () => {
 					)}
 				</div>
 				<div className={s.content}>
-					<Image
-						src={`${
-							action === 'edit' && form.state.values.profile
-								? PF + (form.state.values.profile.avatar ?? '')
-								: PF + form.state.values.avatar
-						}`}
-						alt=''
-						width={256}
-						height={256}
-					/>
+					<div className={s.img} onClick={() => setStep(2)}>
+						<Image
+							src={`${
+								action === 'edit'
+									? `${
+											PF +
+											(initializedAvatar.current
+												? 'storage/' + form.state.values.avatar
+												: form.state.values.profile?.avatar ?? '')
+									  }`
+									: `${PF + 'storage/' + form.state.values.avatar}`
+							}`}
+							alt=''
+							width={256}
+							height={256}
+						/>
+
+						{action === 'edit' && (
+							<div className={s.overlay}>
+								<span>Змінити зображення</span>
+							</div>
+						)}
+					</div>
 
 					<div className={s.inputBlock}>
 						<form.Field
@@ -288,6 +351,7 @@ const ProfileChoose: FC = () => {
 										setAction('choose')
 										setStep(0)
 										form.reset()
+										initializedAvatar.current = false
 									} else {
 										setStep(2)
 									}
@@ -300,7 +364,11 @@ const ProfileChoose: FC = () => {
 				</div>
 			</div>
 			<div className={s.bot}>
-				<span className={s.step}>Крок 3 з 3</span>
+				{action === 'edit' ? (
+					<span className={`${s.step} ${s.editStep}`}>Видалити профіль</span>
+				) : (
+					<span className={s.step}>Крок 3 з 3</span>
+				)}
 			</div>
 		</div>
 	)
@@ -316,6 +384,11 @@ const ProfileChoose: FC = () => {
 		if (action === 'choose' && viewType === 'add') {
 			setStep(1)
 			setPageType('all')
+		}
+
+		const isEditMode = searchParams.get('isEditMode')
+		if (isEditMode) {
+			setAction('edit')
 		}
 
 		initialized.current = true

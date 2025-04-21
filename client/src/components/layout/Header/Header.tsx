@@ -149,7 +149,9 @@ const Header: FC = () => {
 												/>
 												<div className={s.text}>
 													<p>{activeProfile?.name}</p>
-													<span>Редагувати профілі</span>
+													<Link href={'/profile-choose?isEditMode=true'}>
+														Редагувати профілі
+													</Link>
 												</div>
 											</div>
 											{renderProfiles()}

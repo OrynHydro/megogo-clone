@@ -149,4 +149,25 @@ router.get('/get-by-token', async (req: Request, res: Response) => {
 	}
 })
 
+router.put('/edit-profile/:profileId', async (req: Request, res: Response) => {
+	try {
+		const { username, avatar } = req.body
+
+		const updatedProfile = await Profile.findByIdAndUpdate(
+			req.params.profileId,
+			{ name: username, avatar: avatar },
+			{ new: true }
+		)
+
+		if (!updatedProfile) {
+			return res.status(404).json({ message: 'Profile not found' })
+		}
+
+		res.status(200).json(updatedProfile)
+	} catch (error) {
+		console.error('Error updating profile:', error)
+		res.status(500).json({ message: 'Internal server error' })
+	}
+})
+
 export default router
