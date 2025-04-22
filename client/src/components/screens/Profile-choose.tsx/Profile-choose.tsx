@@ -38,7 +38,9 @@ const ProfileChoose: FC = () => {
 	const router = useRouter()
 
 	const [step, setStep] = useState(0)
-	const [action, setAction] = useState<'choose' | 'create' | 'edit'>('choose')
+	const [action, setAction] = useState<'choose' | 'create' | 'edit' | 'delete'>(
+		'choose'
+	)
 	const [pageType, setPageType] = useState<'all' | 'kid' | null>(null)
 
 	const form = useForm({
@@ -51,7 +53,7 @@ const ProfileChoose: FC = () => {
 			isProfileExists: false,
 		},
 		onSubmit: async ({ value }) => {
-			if (!value.profile) {
+			if (action === 'create') {
 				if (!value.profileType) return
 				const { profileType, username, avatar } = value
 				const { data } = await axios.post('/api/profiles/create-profile', {
@@ -67,7 +69,7 @@ const ProfileChoose: FC = () => {
 					document.location.reload()
 				}
 				return
-			} else if (action !== 'edit') {
+			} else if (action === 'choose') {
 				const { profile, rememberMe } = value
 				const { data } = await axios.post('/api/profiles/set-profile', {
 					profile,
@@ -75,10 +77,10 @@ const ProfileChoose: FC = () => {
 				})
 				setActiveProfile(profile)
 				if (data) router.push('/')
-			} else {
+			} else if (action === 'edit' && value.profile) {
 				const [avatar, username] = [
 					value.avatar !== value.profile?.avatar && initializedAvatar.current
-						? 'storage/' + value.avatar
+						? value.avatar
 						: value.profile?.avatar,
 					value.username !== value.profile?.name
 						? value.username
@@ -101,6 +103,24 @@ const ProfileChoose: FC = () => {
 				setUser(updatedUser)
 				setAction('choose')
 				setStep(0)
+				form.reset()
+			} else if (action === 'delete' && value.profile) {
+				await axios.delete(`/api/profiles/delete-profile/${value.profile?._id}`)
+				if (!user) return
+
+				const profileId = user.profiles.indexOf(
+					user.profiles.find(profile => profile._id === value.profile!._id)!
+				)
+
+				const updatedUser: IUser = {
+					...user,
+					profiles: user.profiles.filter((_, index) => index !== profileId),
+				}
+				initializedAvatar.current = false
+				setUser(updatedUser)
+				setAction('choose')
+				setStep(0)
+				form.reset()
 			}
 		},
 	})
@@ -109,7 +129,7 @@ const ProfileChoose: FC = () => {
 		const formData = new FormData()
 		formData.append('file', file)
 		const res = await axios.post('/api/upload', formData)
-		setValue(res.data)
+		setValue(`storage/${res.data}`)
 	}
 
 	useEffect(() => {
@@ -190,10 +210,10 @@ const ProfileChoose: FC = () => {
 												? `${
 														PF +
 														(initializedAvatar.current
-															? 'storage/' + field.state.value
+															? field.state.value
 															: form.state.values.profile?.avatar ?? '')
 												  }`
-												: `${PF + 'storage/' + field.state.value}`
+												: `${PF + field.state.value}`
 										}`}
 										width={256}
 										height={256}
@@ -294,10 +314,10 @@ const ProfileChoose: FC = () => {
 									? `${
 											PF +
 											(initializedAvatar.current
-												? 'storage/' + form.state.values.avatar
+												? form.state.values.avatar
 												: form.state.values.profile?.avatar ?? '')
 									  }`
-									: `${PF + 'storage/' + form.state.values.avatar}`
+									: `${PF + form.state.values.avatar}`
 							}`}
 							alt=''
 							width={256}
@@ -365,10 +385,62 @@ const ProfileChoose: FC = () => {
 			</div>
 			<div className={s.bot}>
 				{action === 'edit' ? (
-					<span className={`${s.step} ${s.editStep}`}>Видалити профіль</span>
+					<span
+						className={`${s.step} ${s.editStep}`}
+						onClick={() => setAction('delete')}
+					>
+						Видалити профіль
+					</span>
 				) : (
 					<span className={s.step}>Крок 3 з 3</span>
 				)}
+			</div>
+		</div>
+	)
+
+	const renderDelete = () => (
+		<div className={`${s.container} ${s.delete}`}>
+			<div className={s.top}>
+				<Image src={`${PF}/logo.svg`} alt='Logo' width={136} height={44} />
+			</div>
+			<div className={s.mid}>
+				<div className={s.content}>
+					<div className={s.img} onClick={() => setStep(2)}>
+						<Image
+							src={`${
+								PF +
+								(initializedAvatar.current
+									? form.state.values.avatar
+									: form.state.values.profile?.avatar ?? '')
+							}`}
+							alt=''
+							width={256}
+							height={256}
+						/>
+					</div>
+
+					<div className={s.titles}>
+						<h1>Ви дійсно хочете його видалити?</h1>
+						<h3>Уся історія цього профілю зникне назавжди.</h3>
+					</div>
+
+					<div className={s.inputBlock}>
+						<div className={`${s.buttonBlock} ${s.step3}`}>
+							<button className={s.next} onClick={() => form.handleSubmit()}>
+								Видалити
+							</button>
+							<button
+								className={s.prev}
+								onClick={() => {
+									setAction('edit')
+									setStep(3)
+								}}
+							>
+								Скасувати
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	)
@@ -397,9 +469,11 @@ const ProfileChoose: FC = () => {
 	const shouldRenderSteps =
 		action === 'create' ||
 		action === 'edit' ||
+		action === 'delete' ||
 		(action === 'choose' && step > 0)
 
 	if (shouldRenderSteps) {
+		if (action === 'delete') return renderDelete()
 		if (step === 1) return renderStep1()
 		if (step === 2) return renderStep2()
 		if (step === 3) return renderStep3()

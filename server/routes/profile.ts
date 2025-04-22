@@ -170,4 +170,29 @@ router.put('/edit-profile/:profileId', async (req: Request, res: Response) => {
 	}
 })
 
+router.delete(
+	'/delete-profile/:profileId',
+	async (req: Request, res: Response) => {
+		try {
+			const { profileId } = req.params
+
+			const deletedProfile = await Profile.findByIdAndDelete(profileId)
+
+			if (!deletedProfile) {
+				return res.status(404).json({ message: 'Profile not found' })
+			}
+
+			await User.updateMany(
+				{ profiles: profileId },
+				{ $pull: { profiles: profileId } }
+			)
+
+			res.status(200).json({ message: 'Profile deleted successfully' })
+		} catch (error) {
+			console.error('Error deleting profile:', error)
+			res.status(500).json({ message: 'Internal server error' })
+		}
+	}
+)
+
 export default router

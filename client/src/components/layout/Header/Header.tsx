@@ -16,6 +16,7 @@ import { GoPlus } from 'react-icons/go'
 import SubcategoryItem from './Subcategory-item/Subcategory-item'
 import { GoDeviceMobile } from 'react-icons/go'
 import { TiStarOutline } from 'react-icons/ti'
+import { FaPlay } from 'react-icons/fa'
 
 const Header: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
@@ -25,6 +26,7 @@ const Header: FC = () => {
 
 	const dropdownSearch = useDropdown('search', s)
 	const dropdownProfile = useDropdown('profile', s)
+	const dropdownWatch = useDropdown('watch', s)
 
 	const setActiveProfileHandler = async (profile: IProfile) => {
 		try {
@@ -104,6 +106,31 @@ const Header: FC = () => {
 						<div>
 							<Link href={'/'}>Тарифи</Link>
 						</div>
+						{user && (
+							<div
+								className={s.watch}
+								onMouseOver={dropdownWatch.toggle}
+								onMouseOut={dropdownWatch.toggle}
+								ref={dropdownWatch.ref}
+							>
+								<FaPlay fontSize={12} /> <span>Я ДИВЛЮСЯ</span>
+								<div className={`${s.watchBlock} ${dropdownWatch.openClass}`}>
+									<ul>
+										<li>
+											<Link href={'/'}>Обрані фільми</Link>
+										</li>
+										<li>
+											<Link href={'/'}>Обрані канали</Link>
+										</li>
+										<li>
+											<Link href={'/'}>Придбане</Link>
+										</li>
+									</ul>
+									<Link href={'/'}>Дивитись все</Link>
+								</div>
+							</div>
+						)}
+
 						<div
 							ref={dropdownSearch.ref}
 							className={s.search}

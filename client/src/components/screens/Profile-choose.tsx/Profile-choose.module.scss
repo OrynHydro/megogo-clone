@@ -8,6 +8,25 @@
 	padding: 32px;
 	background-color: #fff;
 
+	&.delete {
+		justify-content: normal;
+
+		.top {
+			padding-top: 2px;
+		}
+
+		.mid {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.content {
+				flex-direction: column;
+			}
+		}
+	}
+
 	.top {
 		width: 100%;
 		display: flex;
@@ -95,6 +114,7 @@
 				position: relative;
 				img {
 					border-radius: 50%;
+					object-fit: cover;
 				}
 
 				.overlay {
@@ -286,6 +306,7 @@
 
 					.avatar {
 						border-radius: 50%;
+						object-fit: cover;
 					}
 				}
 
