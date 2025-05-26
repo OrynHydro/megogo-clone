@@ -1,7 +1,9 @@
+import CardItem from '@/components/ui/Card-item/Card-item'
+
 export default function Home() {
 	return (
-		<div>
-			<h1>Home</h1>
+		<div className='content-wrapper'>
+			<CardItem />
 		</div>
 	)
 }

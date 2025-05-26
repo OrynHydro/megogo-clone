@@ -26,7 +26,6 @@ const Header: FC = () => {
 
 	const dropdownSearch = useDropdown('search', s)
 	const dropdownProfile = useDropdown('profile', s)
-	const dropdownWatch = useDropdown('watch', s)
 
 	const setActiveProfileHandler = async (profile: IProfile) => {
 		try {
@@ -107,14 +106,9 @@ const Header: FC = () => {
 							<Link href={'/'}>Тарифи</Link>
 						</div>
 						{user && (
-							<div
-								className={s.watch}
-								onMouseOver={dropdownWatch.toggle}
-								onMouseOut={dropdownWatch.toggle}
-								ref={dropdownWatch.ref}
-							>
+							<div className={s.watch}>
 								<FaPlay fontSize={12} /> <span>Я ДИВЛЮСЯ</span>
-								<div className={`${s.watchBlock} ${dropdownWatch.openClass}`}>
+								<div className={s.watchBlock}>
 									<ul>
 										<li>
 											<Link href={'/'}>Обрані фільми</Link>

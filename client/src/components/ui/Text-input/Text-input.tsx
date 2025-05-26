@@ -49,6 +49,7 @@ const TextInput: FC<TextInputProps> = ({
 						if (isCode) {
 							const newValue = e.target.value.slice(0, 6)
 							const numericValue = Number(newValue)
+							console.log(numericValue)
 							field.setValue(isNaN(numericValue) ? '' : numericValue)
 						} else if (maxLength) {
 							setCounter(e.target.value.length)

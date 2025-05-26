@@ -1,0 +1,132 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	&:hover {
+		.thumbnail .overlay {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+
+	.thumbnail {
+		width: 300px;
+		height: 168px;
+		position: relative;
+
+		.broadcastType {
+			position: absolute;
+			z-index: 2;
+			top: 10px;
+			left: 10px;
+			display: flex;
+			align-items: center;
+			border-radius: 5px;
+			padding: 3px 6px;
+			background-color: hsla(0, 0%, 93%, 0.9);
+			color: var(--base-black);
+			font-size: 11px;
+			font-weight: 600;
+			line-height: 12px;
+
+			&.live {
+				background-color: #ff3d3d;
+				color: #fff;
+
+				&::before {
+					content: '';
+					margin-right: 4px;
+					border-radius: 50%;
+					width: 4px;
+					height: 4px;
+					background-color: #fff;
+				}
+			}
+		}
+
+		.channel {
+			position: absolute;
+			left: 10px;
+			bottom: 10px;
+			z-index: 2;
+			border-radius: 5px;
+			object-fit: cover;
+		}
+
+		.cover {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+			border-radius: 8px;
+		}
+
+		.overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 3;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			opacity: 0;
+			visibility: hidden;
+			border-radius: 8px;
+			transition: var(--transition);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			color: #fff;
+			gap: 10px;
+
+			span {
+				font-size: 14px;
+				font-weight: 500;
+				line-height: 1.1;
+			}
+		}
+	}
+
+	.desc {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		font-size: 12px;
+		font-weight: 400;
+		line-height: 18px;
+
+		.title {
+			font-size: 15px;
+			font-weight: 500;
+			color: var(--base-black);
+		}
+
+		.startDateTime {
+			color: #a6a6a6;
+		}
+
+		.discount {
+			margin-top: 13px;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-weight: 600;
+
+			.discountLabel {
+				border-radius: 5px;
+				font-size: 11px;
+				line-height: 14px;
+				color: #fff;
+				background-color: #fc363b;
+				padding: 2px 6px;
+			}
+
+			.discountValue {
+				line-height: 15px;
+				color: var(--base-red);
+			}
+		}
+	}
+}

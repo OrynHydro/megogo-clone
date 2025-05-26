@@ -94,7 +94,7 @@
 					font-size: 12px;
 					font-weight: 600;
 					line-height: 15px;
-					color: #f60;
+					color: var(--base-red);
 					text-transform: uppercase;
 					cursor: pointer;
 				}
@@ -131,9 +131,9 @@
 					margin: 0;
 
 					&:last-child {
-						border-color: #ff6600;
+						border-color: var(--base-red);
 						background-color: transparent;
-						color: #ff6600;
+						color: var(--base-red);
 
 						&:hover {
 							color: #ff3300;
@@ -158,7 +158,7 @@
 				font-weight: 600;
 				padding: 15px 32px 17px;
 				cursor: pointer;
-				background-color: #ff6600;
+				background-color: var(--base-red);
 				transition: var(--transition);
 				color: #fff;
 				border-radius: 8px;

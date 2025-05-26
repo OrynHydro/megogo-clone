@@ -14,7 +14,6 @@ interface NavItemProps {
 }
 
 const NavItem: FC<NavItemProps> = ({ item, isMenu }) => {
-	// const [isOpen, setIsOpen] = useState<boolean>(false)
 	const langMenu = useDropdown('langMenu', s)
 	return (
 		<div
