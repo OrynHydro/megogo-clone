@@ -1,9 +1,13 @@
-import { FC } from 'react'
+'use client'
+import { FC, useRef, useState } from 'react'
 import s from './Card-item.module.scss'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FaPlay } from 'react-icons/fa6'
 import { FaRegBookmark } from 'react-icons/fa'
+import { FaRegClock } from 'react-icons/fa'
+import { AiFillLike } from 'react-icons/ai'
+import { AiFillDislike } from 'react-icons/ai'
 
 interface CardItemProps {
 	item: ICardItem
@@ -20,12 +24,50 @@ export interface ICardItem {
 
 const CardItem: FC<CardItemProps> = ({ item }) => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
+
+	const [hoverTooltip, setHoverTooltip] = useState<boolean>(true)
+	const timerRef = useRef<number | null>(null)
+	const hideTimerRef = useRef<number | null>(null)
+
+	const handleMouseOver = () => {
+		if (item.type === 'archive') {
+			if (hideTimerRef.current !== null) {
+				clearTimeout(hideTimerRef.current)
+				hideTimerRef.current = null
+			}
+			timerRef.current = window.setTimeout(() => {
+				setHoverTooltip(true)
+				console.log('Hovered over card item:', item.title)
+			}, 2000)
+		}
+	}
+
+	const handleMouseOut = () => {
+		if (item.type === 'archive') {
+			if (timerRef.current !== null) {
+				clearTimeout(timerRef.current)
+				timerRef.current = null
+			}
+			hideTimerRef.current = window.setTimeout(() => {
+				setHoverTooltip(false)
+				console.log('Mouse out from card item:', item.title)
+				hideTimerRef.current = null
+			}, 100)
+		}
+	}
+
 	return (
-		<Link href={'#'} className={s.card} title={item.title}>
+		<Link
+			href={'#'}
+			className={s.card}
+			title={item.title}
+			onMouseOver={handleMouseOver}
+			onMouseOut={handleMouseOut}
+		>
 			<div
 				className={`${s.thumbnail} ${
 					item.type === 'broadcast' ? s.broadcast : s.archive
-				}`}
+				} ${hoverTooltip ? s.open : ''}`}
 			>
 				{item.type === 'broadcast' && (
 					<>
@@ -60,6 +102,40 @@ const CardItem: FC<CardItemProps> = ({ item }) => {
 						<FaRegBookmark className={s.bookmark} fontSize={18} />
 					)}
 				</div>
+				{item.type === 'archive' && (
+					<div className={s.tooltip}>
+						<div className={s.container}>
+							<p className={s.fullDesc}>
+								Дія фантастично-драматичного серіалу Одні з нас, що вийшов на
+								екрани 2023 року, відбувається в майбутньому після апокаліпсису,
+								що стався на Землі на території колишніх Сполучених Штатів
+								Америки. Двадцять років тому поширилася жахлива пандемія, що
+								стала наслідком
+							</p>
+							<div className={s.extra}>
+								<span className={s.quality}>Full HD</span>
+								<span className={s.age}>18+</span>
+								<span className={s.rating}>
+									<b className={s.value}>7.2</b> IMDb
+								</span>
+								<span className={s.rating}>
+									<b className={s.value}>8.5</b> MGG
+								</span>
+								<span className={s.duration}>
+									<FaRegClock fontSize={12} color='#808080' /> 93 хвилини
+								</span>
+							</div>
+							<div className={s.buttonBlock}>
+								<button className={s.like}>
+									<AiFillLike color='#777777' /> 943
+								</button>
+								<button className={s.dislike}>
+									<AiFillDislike color='#777777' /> 943
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 			<div className={s.desc}>
 				<h4 className={s.title}>{item.title}</h4>
