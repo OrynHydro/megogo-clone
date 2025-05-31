@@ -9,6 +9,8 @@ import { FaChevronLeft } from 'react-icons/fa'
 import { FaChevronRight } from 'react-icons/fa'
 import { AvatarCarouselProps } from '@/utils/avatar-carousels'
 import Image from 'next/image'
+import CardItem from '@/components/ui/Card-item/Card-item'
+import { ICardItem } from '@/interfaces/card-item.interface'
 
 interface ArrowProps {
 	onClick: () => void
@@ -33,20 +35,26 @@ function SampleArrow(props: ArrowProps) {
 	)
 }
 
+export type CarouselData =
+	| { type: 'avatars'; title: string; folder: string; items: string[] }
+	| { type: 'cards'; title: string; items: ICardItem[] }
+
 const Carousel: FC<{
-	slider: AvatarCarouselProps
-	onClick: (path: string) => void
-}> = ({ slider, onClick }) => {
+	slider: CarouselData
+	onClick?: (path: string) => void
+	slidePerView: number
+}> = ({ slider, onClick, slidePerView }) => {
 	const handleBeforeChange = (oldIndex: number, newIndex: number) => {
 		setCurrentSlide(newIndex)
 	}
 
 	const settings = {
 		speed: 500,
-		slidesToShow: 6,
-		slidesToScroll: 6,
+		slidesToShow: slidePerView,
+		slidesToScroll: slidePerView,
 		infinite: false,
 		beforeChange: handleBeforeChange,
+		arrows: false,
 	}
 
 	const [currentSlide, setCurrentSlide] = useState(0)
@@ -73,7 +81,7 @@ const Carousel: FC<{
 	useEffect(() => {
 		if (currentSlide === 0) {
 			setDisabledButtons({ prev: true, next: false })
-		} else if (currentSlide >= slider.avatars.length * 5 - 1) {
+		} else if (currentSlide >= slider.items.length * (slidePerView - 1) - 1) {
 			setDisabledButtons({ prev: false, next: true })
 		} else {
 			setDisabledButtons({ prev: false, next: false })
@@ -87,25 +95,43 @@ const Carousel: FC<{
 			<span className={s.title}>{slider.title}</span>
 			<div className={s.slider}>
 				<Slider ref={sliderRef} {...settings}>
-					{Array.from({ length: 6 }).map(_ =>
-						slider.avatars.map((avatar, index) => (
-							<div
-								className={s.slide}
-								key={index}
-								onClick={() =>
-									onClick(`storage/avatars/${slider.folder}${avatar}`)
-								}
-							>
-								<div className={s.imgBlock}>
-									<Image
-										src={`${PF}storage/avatars/${slider.folder}${avatar}`}
-										alt={`Avatar ${index + 1}`}
-										width={100}
-										height={100}
-									/>
-								</div>
-							</div>
-						))
+					{Array.from({ length: slidePerView }).map((_, outerIndex) =>
+						slider.items.map((item, index) => {
+							if (slider.type === 'avatars') {
+								const avatar = item as string
+								return (
+									<div
+										className={s.slide}
+										key={`avatar-${outerIndex}-${index}`}
+										onClick={() => {
+											if (onClick) {
+												onClick(`storage/avatars/${slider.folder}${avatar}`)
+											}
+										}}
+									>
+										<div className={s.imgBlock}>
+											<Image
+												src={`${PF}storage/avatars/${slider.folder}${avatar}`}
+												alt={`Avatar ${index + 1}`}
+												width={100}
+												height={100}
+											/>
+										</div>
+									</div>
+								)
+							} else if (slider.type === 'cards') {
+								const card = item as ICardItem
+								return (
+									<div className={s.slide} key={`card-${outerIndex}-${index}`}>
+										<CardItem
+											index={index}
+											totalItems={slider.items.length}
+											item={card}
+										/>
+									</div>
+								)
+							}
+						})
 					)}
 				</Slider>
 

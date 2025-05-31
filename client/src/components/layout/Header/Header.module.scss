@@ -9,6 +9,7 @@
 	left: 50%;
 	transform: translateX(-50%);
 	top: 0;
+	z-index: 3;
 
 	.container {
 		display: flex;
@@ -85,6 +86,7 @@
 					box-shadow: var(--box-shadow);
 					cursor: default;
 					width: 240px;
+					z-index: 3;
 
 					.content {
 						display: flex;

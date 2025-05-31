@@ -250,6 +250,7 @@ const ProfileChoose: FC = () => {
 								form.setFieldValue('avatar', val)
 								initializedAvatar.current = true
 							}}
+							slidePerView={6}
 						/>
 					))}
 				</div>

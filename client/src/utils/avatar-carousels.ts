@@ -1,3 +1,5 @@
+import { CarouselData } from '@/components/screens/Profile-choose.tsx/Carousel/Carousel'
+
 export interface AvatarCarouselProps {
 	title: string
 	folder: string
@@ -6,7 +8,7 @@ export interface AvatarCarouselProps {
 
 const avatars = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png']
 
-export const AvatarCarousel: AvatarCarouselProps[] = [
+export const AvatarCarousel: CarouselData[] = [
 	{ title: 'Люди', folder: 'people/' },
 	{ title: 'Веселі тварини', folder: 'fun-animals/' },
 	{ title: 'Ділові тварини', folder: 'business-animals/' },
@@ -16,6 +18,8 @@ export const AvatarCarousel: AvatarCarouselProps[] = [
 	{ title: 'Настрій', folder: 'mood/' },
 	{ title: 'MEGOGO', folder: 'megogo/' },
 ].map(item => ({
-	...item,
-	avatars,
+	type: 'avatars',
+	title: item.title,
+	folder: item.folder,
+	items: avatars,
 }))

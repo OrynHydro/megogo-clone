@@ -8,26 +8,22 @@ import { FaRegBookmark } from 'react-icons/fa'
 import { FaRegClock } from 'react-icons/fa'
 import { AiFillLike } from 'react-icons/ai'
 import { AiFillDislike } from 'react-icons/ai'
+import { ICardItem } from '@/interfaces/card-item.interface'
 
 interface CardItemProps {
 	item: ICardItem
-}
-export interface ICardItem {
-	type: 'broadcast' | 'archive'
-	broadcastType?: 'live' | 'recorded'
-	title: string
-	desc: string
-	thumbnail: string
-	channel?: string
-	discountValue: string | null
+	index: number
+	totalItems: number
 }
 
-const CardItem: FC<CardItemProps> = ({ item }) => {
+const CardItem: FC<CardItemProps> = ({ item, index, totalItems }) => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 
-	const [hoverTooltip, setHoverTooltip] = useState<boolean>(true)
+	const [hoverTooltip, setHoverTooltip] = useState<boolean>(false)
 	const timerRef = useRef<number | null>(null)
 	const hideTimerRef = useRef<number | null>(null)
+
+	const isLastTwo = index >= totalItems - 2
 
 	const handleMouseOver = () => {
 		if (item.type === 'archive') {
@@ -103,7 +99,7 @@ const CardItem: FC<CardItemProps> = ({ item }) => {
 					)}
 				</div>
 				{item.type === 'archive' && (
-					<div className={s.tooltip}>
+					<div className={`${s.tooltip} ${isLastTwo ? s.tooltipLeft : ''}`}>
 						<div className={s.container}>
 							<p className={s.fullDesc}>
 								Дія фантастично-драматичного серіалу Одні з нас, що вийшов на
