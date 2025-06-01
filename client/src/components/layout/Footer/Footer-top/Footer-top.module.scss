@@ -1,0 +1,135 @@
+.footerTop {
+	background-color: #e6e6e6;
+	padding: 45px 0;
+
+	.container {
+		display: flex;
+		flex-direction: column;
+		gap: 40px;
+
+		.title {
+			font-size: 14px;
+			font-weight: 500;
+			color: #666;
+			width: fit-content;
+		}
+
+		.bottom {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.apps,
+			.media {
+				display: flex;
+				align-items: center;
+				gap: 20px;
+			}
+
+			.media {
+				gap: 0;
+				width: 316px;
+				justify-content: space-between;
+				.app {
+					.icon {
+						color: #a9a9a9;
+					}
+
+					.instaIcon {
+						width: 28px;
+						height: 28px;
+						position: relative;
+						left: 4px;
+					}
+
+					&:nth-child(1) {
+						.icon {
+							font-size: 36px;
+							&:hover {
+								color: #3480fa;
+							}
+						}
+					}
+				}
+			}
+
+			.apps {
+				.app {
+					transition: var(--transition);
+					&:hover {
+						opacity: 0.85;
+					}
+					img {
+						border-radius: 5px;
+						object-fit: cover;
+					}
+				}
+			}
+
+			.left,
+			.right {
+				display: flex;
+				flex-direction: column;
+				gap: 15px;
+			}
+		}
+
+		.top {
+			display: flex;
+			justify-content: space-between;
+
+			.left {
+				display: flex;
+				gap: 20px;
+			}
+
+			.block {
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
+				font-size: 14px;
+				font-weight: 400;
+				line-height: 18px;
+
+				.email {
+					font-size: 24px;
+					font-weight: 400;
+					line-height: 30px;
+					color: #666;
+					transition: var(--transition);
+					cursor: pointer;
+					&:hover {
+						color: #f30;
+					}
+				}
+
+				.faq {
+					display: flex;
+					align-items: center;
+					gap: 33px;
+				}
+
+				.link {
+					margin-top: 13px;
+					color: #a6a6a6;
+
+					a {
+						cursor: pointer;
+						&:hover {
+							color: #f30;
+							transition: var(--transition);
+						}
+					}
+				}
+
+				.links {
+					&.linksLeft {
+						display: grid;
+						grid-template-columns: repeat(2, 1fr);
+						column-gap: 40px;
+					}
+				}
+			}
+		}
+	}
+}

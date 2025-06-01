@@ -82,7 +82,7 @@ const Header: FC = () => {
 	}
 
 	return (
-		<div className={s.header}>
+		<header className={s.header}>
 			<div className='content-wrapper'>
 				<div className={s.container}>
 					<div className={s.left}>
@@ -209,7 +209,7 @@ const Header: FC = () => {
 					</nav>
 				</div>
 			</div>
-		</div>
+		</header>
 	)
 }
 

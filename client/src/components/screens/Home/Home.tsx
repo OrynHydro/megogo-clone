@@ -8,7 +8,7 @@ import s from './Home.module.scss'
 
 const HomePage: FC = () => {
 	return (
-		<div className={s.home}>
+		<main className={s.home}>
 			{BroadcastCarousel.map((slider, index) => (
 				<Carousel key={index} slider={slider} slidePerView={4} />
 			))}
@@ -16,7 +16,7 @@ const HomePage: FC = () => {
 			{ArchiveCarousel.map((slider, index) => (
 				<Carousel key={index} slider={slider} slidePerView={6} />
 			))}
-		</div>
+		</main>
 	)
 }
 
