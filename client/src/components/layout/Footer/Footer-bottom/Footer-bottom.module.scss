@@ -1,0 +1,39 @@
+.footerBottom {
+	width: 100%;
+	background-color: #1a1a1a;
+	font-size: 14px;
+	line-height: 1.25;
+	font-weight: 500;
+	color: #fff;
+	position: relative;
+
+	.container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 0;
+
+		.left {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+
+			.logo {
+				height: 50px;
+			}
+
+			.nav {
+				display: flex;
+				align-items: center;
+			}
+		}
+
+		.right {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+			font-weight: 400;
+			color: hsla(0, 0%, 100%, 0.65);
+		}
+	}
+}

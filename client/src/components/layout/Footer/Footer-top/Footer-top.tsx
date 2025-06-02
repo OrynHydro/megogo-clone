@@ -1,5 +1,4 @@
-'use client'
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import s from './Footer-top.module.scss'
 import {
 	FooterApps,
@@ -12,7 +11,6 @@ import Image from 'next/image'
 
 const FooterTop: FC = () => {
 	const PF = process.env.NEXT_PUBLIC_FOLDER
-	const [iconHover, setIconHover] = useState(false)
 	return (
 		<div className={s.footerTop}>
 			<div className={'content-wrapper'}>
@@ -81,23 +79,15 @@ const FooterTop: FC = () => {
 						<div className={s.right}>
 							<h3 className={s.title}>Ми в соцмережах</h3>
 							<ul className={s.media}>
-								{FooterMedia.map(({ icon: Icon, link }, index) => (
+								{FooterMedia.map((media, index) => (
 									<li key={index} className={s.app}>
-										<Link
-											href={link}
-											target='_blank'
-											rel='noreferrer'
-											onMouseOver={() => setIconHover(true)}
-											onMouseLeave={() => setIconHover(false)}
-										>
-											{link.includes('instagram') && iconHover ? (
-												<img
-													src={`${PF}footer-media/instagram.svg`}
-													className={`${s.instaIcon} ${s.icon}`}
-												/>
-											) : (
-												<Icon className={s.icon} fontSize={32} />
-											)}
+										<Link href={media.link} target='_blank' rel='noreferrer'>
+											<Image
+												width={32}
+												height={32}
+												alt=''
+												src={`${PF}footer-media/${media.icon}`}
+											/>
 										</Link>
 									</li>
 								))}

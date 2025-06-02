@@ -42,7 +42,7 @@
 		visibility: visible;
 	}
 
-	&:not(.menu):hover .content,
+	&:not(.menu):hover:not(.footer) .content,
 	&.open .content {
 		background-color: #fff;
 		color: var(--hover-red);
@@ -52,7 +52,8 @@
 		color: var(--hover-red);
 	}
 
-	&:not(.open).menu {
+	&:not(.open).menu,
+	&.footer {
 		.content:hover {
 			color: var(--hover-red);
 		}

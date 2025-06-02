@@ -1,11 +1,4 @@
-import { ReactNode } from 'react'
-import { MdFacebook } from 'react-icons/md'
-import { FaSquareInstagram } from 'react-icons/fa6'
-import { FaViber } from 'react-icons/fa'
-import { FaTelegram } from 'react-icons/fa6'
-import { FaTiktok } from 'react-icons/fa'
-import { BsTwitterX } from 'react-icons/bs'
-import { IconType } from 'react-icons'
+import { IHeaderNav } from './header-nav'
 
 interface IFooterLinks {
 	title: string
@@ -19,7 +12,7 @@ interface IFooterApps {
 }
 
 interface IFooterMedia {
-	icon: IconType
+	icon: string
 	link: string
 }
 
@@ -85,27 +78,62 @@ export const FooterApps: IFooterApps[] = [
 
 export const FooterMedia: IFooterMedia[] = [
 	{
-		icon: MdFacebook,
+		icon: 'facebook.svg',
 		link: 'https://www.facebook.com/MegogoUA/',
 	},
 	{
-		icon: FaSquareInstagram,
+		icon: 'instagram.svg',
 		link: 'https://www.instagram.com/megogo_ua/',
 	},
 	{
-		icon: FaViber,
+		icon: 'viber.svg',
 		link: 'http://bit.ly/30O0FJ0',
 	},
 	{
-		icon: FaTelegram,
+		icon: 'telegram.svg',
 		link: 'https://t.me/popcorn_night',
 	},
 	{
-		icon: FaTiktok,
+		icon: 'tiktok.svg',
 		link: 'https://www.tiktok.com/@megogo_ua',
 	},
 	{
-		icon: BsTwitterX,
+		icon: 'x.svg',
 		link: 'https://x.com/megogo_ua',
+	},
+]
+
+export const FooterNav: IHeaderNav[] = [
+	{
+		content: 'ТЕЛЕКАНАЛИ',
+		link: '/tv-channels',
+	},
+	{
+		content: 'ФІЛЬМИ',
+		link: '/movies',
+	},
+	{
+		content: 'МУЛЬТФІЛЬМИ',
+		link: '/cartoons',
+	},
+	{
+		content: 'СЕРІАЛИ',
+		link: '/series',
+	},
+	{
+		content: 'ШОУ',
+		link: '/shows',
+	},
+	{
+		content: 'СПОРТ',
+		link: '/sport',
+	},
+	{
+		content: 'ОСВІТА',
+		link: '/education',
+	},
+	{
+		content: 'DISCOVERY+',
+		link: '/discovery+',
 	},
 ]

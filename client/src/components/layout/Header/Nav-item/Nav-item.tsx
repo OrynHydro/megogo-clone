@@ -11,13 +11,14 @@ import { useDropdown } from '@/hooks/useDropdown'
 interface NavItemProps {
 	item: IHeaderNav | ILangMenu
 	isMenu?: boolean
+	footer?: boolean
 }
 
-const NavItem: FC<NavItemProps> = ({ item, isMenu }) => {
+const NavItem: FC<NavItemProps> = ({ item, isMenu, footer }) => {
 	const langMenu = useDropdown('langMenu', s)
 	return (
 		<div
-			className={`${s.item} ${isMenu ? s.menu : ''} ${
+			className={`${s.item} ${isMenu ? s.menu : ''} ${footer ? s.footer : ''} ${
 				isMenu && langMenu.openClass
 			}`}
 			onClick={() => isMenu && langMenu.toggle()}

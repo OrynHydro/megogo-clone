@@ -27,27 +27,25 @@
 			}
 
 			.media {
-				gap: 0;
-				width: 316px;
-				justify-content: space-between;
+				gap: 24px;
 				.app {
 					.icon {
 						color: #a9a9a9;
 					}
 
-					.instaIcon {
-						width: 28px;
-						height: 28px;
-						position: relative;
-						left: 4px;
+					img {
+						opacity: 0.3;
+						transition: var(--transition);
+						&:hover {
+							opacity: 1;
+							transform: scale(1.2);
+						}
 					}
 
-					&:nth-child(1) {
-						.icon {
-							font-size: 36px;
-							&:hover {
-								color: #3480fa;
-							}
+					&:first-child {
+						img {
+							width: 40px;
+							height: 40px;
 						}
 					}
 				}
