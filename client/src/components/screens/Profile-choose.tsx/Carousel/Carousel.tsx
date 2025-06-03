@@ -11,6 +11,9 @@ import { AvatarCarouselProps } from '@/utils/avatar-carousels'
 import Image from 'next/image'
 import CardItem from '@/components/ui/Card-item/Card-item'
 import { ICardItem } from '@/interfaces/card-item.interface'
+import { CarouselData } from '@/interfaces/carousel-data.type'
+import { IGenreCard } from '@/interfaces/genre-card.interface'
+import Link from 'next/link'
 
 interface ArrowProps {
 	onClick: () => void
@@ -34,10 +37,6 @@ function SampleArrow(props: ArrowProps) {
 		</button>
 	)
 }
-
-export type CarouselData =
-	| { type: 'avatars'; title: string; folder: string; items: string[] }
-	| { type: 'cards'; title: string; items: ICardItem[] }
 
 const Carousel: FC<{
 	slider: CarouselData
@@ -79,14 +78,17 @@ const Carousel: FC<{
 	})
 
 	useEffect(() => {
-		if (currentSlide === 0) {
-			setDisabledButtons({ prev: true, next: false })
-		} else if (currentSlide >= slider.items.length * (slidePerView - 1) - 1) {
-			setDisabledButtons({ prev: false, next: true })
-		} else {
-			setDisabledButtons({ prev: false, next: false })
-		}
-	}, [currentSlide])
+		const isAtStart = currentSlide === 0
+		const isAtEnd =
+			slider.type === 'genres'
+				? currentSlide >= slider.items.length - slidePerView
+				: currentSlide >= slider.items.length * (slidePerView - 1) - 1
+
+		setDisabledButtons({
+			prev: isAtStart,
+			next: isAtEnd,
+		})
+	}, [currentSlide, slider.type, slider.items.length, slidePerView])
 
 	const PF = process.env.NEXT_PUBLIC_FOLDER
 
@@ -95,44 +97,68 @@ const Carousel: FC<{
 			<span className={s.title}>{slider.title}</span>
 			<div className={s.slider}>
 				<Slider ref={sliderRef} {...settings}>
-					{Array.from({ length: slidePerView }).map((_, outerIndex) =>
-						slider.items.map((item, index) => {
-							if (slider.type === 'avatars') {
-								const avatar = item as string
+					{slider.type !== 'genres'
+						? Array.from({ length: slidePerView }).map((_, outerIndex) =>
+								slider.items.map((item, index) => {
+									const key = `${slider.type}-${outerIndex}-${index}`
+
+									if (slider.type === 'avatars') {
+										const avatar = item as string
+										const avatarPath = `storage/avatars/${slider.folder}${avatar}`
+
+										return (
+											<div
+												className={s.slide}
+												key={key}
+												onClick={() => onClick?.(avatarPath)}
+											>
+												<div className={s.imgBlock}>
+													<Image
+														src={`${PF}${avatarPath}`}
+														alt={`Avatar ${index + 1}`}
+														width={100}
+														height={100}
+													/>
+												</div>
+											</div>
+										)
+									}
+
+									if (slider.type === 'cards') {
+										const card = item as ICardItem
+
+										return (
+											<div className={s.slide} key={key}>
+												<CardItem
+													index={index}
+													totalItems={slider.items.length}
+													item={card}
+												/>
+											</div>
+										)
+									}
+
+									return null
+								})
+						  )
+						: slider.items.map((item, index) => {
+								const genre = item as IGenreCard
 								return (
-									<div
-										className={s.slide}
-										key={`avatar-${outerIndex}-${index}`}
-										onClick={() => {
-											if (onClick) {
-												onClick(`storage/avatars/${slider.folder}${avatar}`)
-											}
-										}}
+									<Link
+										href={genre.link}
+										className={`${s.slide} ${s.genreCard}`}
+										key={`genre-${index}`}
 									>
-										<div className={s.imgBlock}>
-											<Image
-												src={`${PF}storage/avatars/${slider.folder}${avatar}`}
-												alt={`Avatar ${index + 1}`}
-												width={100}
-												height={100}
-											/>
-										</div>
-									</div>
-								)
-							} else if (slider.type === 'cards') {
-								const card = item as ICardItem
-								return (
-									<div className={s.slide} key={`card-${outerIndex}-${index}`}>
-										<CardItem
-											index={index}
-											totalItems={slider.items.length}
-											item={card}
+										<Image
+											width={300}
+											height={203}
+											alt=''
+											src={`${PF}/genre-images/${genre.image}`}
 										/>
-									</div>
+										<div className={s.overlay} />
+									</Link>
 								)
-							}
-						})
-					)}
+						  })}
 				</Slider>
 
 				<div className={s.sliderArrows}>

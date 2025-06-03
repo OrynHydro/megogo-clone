@@ -33,7 +33,6 @@ const CardItem: FC<CardItemProps> = ({ item, index, totalItems }) => {
 			}
 			timerRef.current = window.setTimeout(() => {
 				setHoverTooltip(true)
-				console.log('Hovered over card item:', item.title)
 			}, 2000)
 		}
 	}
@@ -46,7 +45,6 @@ const CardItem: FC<CardItemProps> = ({ item, index, totalItems }) => {
 			}
 			hideTimerRef.current = window.setTimeout(() => {
 				setHoverTooltip(false)
-				console.log('Mouse out from card item:', item.title)
 				hideTimerRef.current = null
 			}, 100)
 		}

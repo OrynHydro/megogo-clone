@@ -1,8 +1,9 @@
-import { CarouselData } from '@/components/screens/Profile-choose.tsx/Carousel/Carousel'
+import { CarouselData } from '@/interfaces/carousel-data.type'
 import { ICardItem } from '@/interfaces/card-item.interface'
 
 export const BroadcastCarousel: CarouselData[] = [
 	{
+		type: 'cards',
 		title: 'Зараз на ТБ',
 		items: [
 			{
@@ -41,16 +42,13 @@ export const BroadcastCarousel: CarouselData[] = [
 				channel: 'channel1.jpg',
 				discountValue: 'МАКСИМАЛЬНА',
 			},
-		],
+		] as ICardItem[],
 	},
-].map(item => ({
-	type: 'cards',
-	title: 'Зараз на ТБ',
-	items: item.items as ICardItem[],
-}))
+]
 
 export const ArchiveCarousel: CarouselData[] = [
 	{
+		type: 'cards',
 		title: 'Топ переглядів на MEGOGO',
 		items: [
 			{
@@ -95,10 +93,6 @@ export const ArchiveCarousel: CarouselData[] = [
 				thumbnail: 'thumbnail2.jpg',
 				discountValue: null,
 			},
-		],
+		] as ICardItem[],
 	},
-].map(item => ({
-	type: 'cards',
-	title: item.title,
-	items: item.items as ICardItem[],
-}))
+]

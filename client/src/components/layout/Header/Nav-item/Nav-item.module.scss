@@ -3,6 +3,11 @@
 	cursor: pointer;
 	box-shadow: var(--box-shadow);
 
+	&.footer .content {
+		padding: 0 8px;
+		margin: 0;
+	}
+
 	.content {
 		padding: 8px;
 		border-radius: 8px;

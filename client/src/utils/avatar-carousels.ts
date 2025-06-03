@@ -1,5 +1,4 @@
-import { CarouselData } from '@/components/screens/Profile-choose.tsx/Carousel/Carousel'
-
+import { CarouselData } from '@/interfaces/carousel-data.type'
 export interface AvatarCarouselProps {
 	title: string
 	folder: string
